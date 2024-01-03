@@ -22,6 +22,8 @@ testthat::test_that("Prints output to console", {
   model_1<- 'f  =~ x1 + x2 + x3 + x4 + x5 + x6+  x7 + x8 + x9 '
   fit_1 <- cfa(model_1, data = data)
   fit.summary <- round(fitmeasures(fit_1),3)
+
+  expect_output(print(fit.summary))
 })
 
 testthat::test_that("fitMeasures and fitmeasures give identical outputs", {
@@ -51,19 +53,17 @@ testthat::test_that("Returns scaled output when scaled test name provided", {
   data = HolzingerSwineford1939
   model_1 <- 'f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 '
   fit_1 <- cfa(model_1, data = data)
-  fit.summary <- fitmeasures(fit_1, "all", fm.args = list(scaled.test = "mean.var.adjusted", robust = T))
+  fit.summary <- fitmeasures(fit_1, c("chisq.scaled","df","pvalue.scaled",
+                                      "rmsea.scaled","rmsea.pvalue.scale",
+                                      "rmsea.ci.lower.scaled","rmsea.ci.upper.scaled",
+                                      "cfi","tli","srmr","rmsea",
+                                      "satorra.bentler", "mean.var.adjusted", "scaled.shifted"),
+                             fm.args = list(scaled.test = "yuan.bentler",
+                                            robust = T))
 
   expect_s3_class(fit.summary, "lavaan.vector")
 })
 
-testthat::test_that("Returns output when standard.test = NULL", {
-  data = HolzingerSwineford1939
-  model_1 <- 'f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 '
-  fit_1 <- cfa(model_1, data = data)
-  fit.summary <- fitmeasures(fit_1, "all", fm.args = list(standard.test = NULL, robust = T))
-
-  expect_s3_class(fit.summary, "lavaan.vector")
-})
 
 testthat::test_that("Case when estimator = 'ML' and measures = 'all'", {
   data = HolzingerSwineford1939
@@ -102,6 +102,19 @@ testthat::test_that("Case when estimator = 'MML' and measures = 'default'",{
   expect_s3_class(fit.summary, "lavaan.vector")
 })
 
+testthat::test_that("Case when standard test not in test names",{
+  data = HolzingerSwineford1939
+  model_1 <- 'f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 '
+  fit_1 <- cfa(model_1, data = data)
+  fit.subset<-c("df","pvalue.scaled",
+                "rmsea.scaled","rmsea.pvalue.scale",
+                "rmsea.ci.lower.scaled","rmsea.ci.upper.scaled",
+                "cfi","tli","rmsea","aic","bic")
+  fit.summary <- fitmeasures(fit_1, fit.subset, fm.args = list(standard.test = "chisq"))
+
+  expect_s3_class(fit.summary, "lavaan.vector")
+})
+
 
 testthat::test_that("Returns empty vector when no fit measures provided", {
   data = HolzingerSwineford1939
@@ -122,10 +135,14 @@ testthat::test_that("Returns error message when no data", {
 })
 
 testthat::test_that("Returns error message when model doesn't converge", {
+  suppressWarnings({
   data = head(HolzingerSwineford1939, 6)
   model_1 <- 'f =~ x1 + x2 + x3 + x4 + x5'
-  expect_error(fitmeasures(cfa(model_1, data = data)),
-               "fit measures not available if the model did not converge")
+  fit_1 <- cfa(model_1, data = data)
+
+  expect_error(fitmeasures(fit_1),
+               "fit measures not available if model did not converge")
+  })
 })
 
 testthat::test_that("Returns error message when no fit measures", {
