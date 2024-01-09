@@ -9,6 +9,16 @@ test_that("lavaan() returns correct class", {
   expect_s4_class(fit, "lavaan")
 })
 
+# TODO: HolzingerSwineford1939
+# test_that("lavaan() reproduce the Holzinger & Swineford (1939) example", {
+#   HS.model <- 'visual  =~ x1 + x2 + x3
+#                textual =~ x4 + x5 + x6
+#                speed   =~ x7 + x8 + x9'
+#   fit <- lavaan(HS.model, data=HolzingerSwineford1939,
+#                 auto.var=TRUE, auto.fix.first=TRUE,
+#                 auto.cov.lv.x=TRUE)
+# })
+
 # Input
 ## Formula
 test_that("lavaan() handles invalid formula", {
@@ -20,27 +30,18 @@ test_that("lavaan() handles incorrect syntax", {
   expect_error(lavaan(model, data=HolzingerSwineford1939))
 })
 
-# ## Data
-# test_that("lavaan() handles different data types", {
-#   model <- ' F1 =~ x1 + x2 + x3'
-#   df <- as.data.frame(PoliticalDemocracy) # dataframe
-#   matrix_data <- as.matrix(df[, c("x1", "x2", "x3", "y1", "y2", "y3", "y4", "y5", "y6", "y7", "y8")]) # matrix
-#   expect_silent(lavaan(model, data=df))
-#   expect_silent(lavaan(model, data=matrix_data))
+## Data
+# test_that("lavaan() handles data frames correctly", {
+## TODO
 # })
 # 
 # test_that("lavaan() handles missing data", {
-#   model <- ' F1 =~ x1 + x2 + x3'
-#   df_with_na <- PoliticalDemocracy
-#   df_with_na$x1[1:10] <- NA # Introduce missing values
-#   expect_silent(lavaan(model, data=df_with_na))
+# TODO
 # })
 
 # TODO: input valid dataframe
 # test_that("lavaan() handles data frames correctly", {
-#   model <- ' F1 =~ x1 + x2 + x3 '
-#   data_df <- data.frame(x1 = rnorm(100), x2 = rnorm(100), x3 = rnorm(100))
-#   expect_silent(lavaan(model, data=data_df))
+# TODO
 # })
 
 test_that("lavaan() handles invalid data types: function", {
