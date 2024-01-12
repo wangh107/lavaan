@@ -1,3 +1,30 @@
+testthat::test_that("Returns identical result when no errors present", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit0 <- cfa(HS.model, data = HolzingerSwineford1939, 
+              orthogonal = TRUE)
+  res <- lavTestLRT(fit1, fit0)
+  res_check <- data.frame(
+    Df = c(24, 27),
+    AIC = c(7517.490, 7579.771),
+    BIC = c(7595.339, 7646.439), 
+    Chisq = c(85.30552, 153.52710),
+    `Chisq diff` = c(NA, 68.22158),
+    RMSEA = c(NA, 0.268752),
+    `Df diff` = c(NA, 3),
+    `Pr(>Chisq)` = c(NA, 1.025665e-14), 
+    row.names = c("fit1", "fit0"),
+    check.names = FALSE)
+  class(res_check) <- c("anova", "data.frame")
+  attr(res_check, 'heading') <- c('\nChi-Squared Difference Test\n')
+  
+  expect_equal(res_check, res, tolerance = 0.001)
+})
+
 testthat::test_that("Returns dataframe when no errors present", {
   HS.model <- '
     visual  =~ x1 + b1*x2 + x3
