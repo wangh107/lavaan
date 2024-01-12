@@ -132,3 +132,61 @@ testthat::test_that("Returns warning message for no robust test statistics", {
                            "\n\t but no robust test statistics were used;",
                            "\n\t switching to the standard chi-square difference test"))
 })
+
+# test for each type
+testthat::test_that("Returns dataframe when no errors present - browne.residual.nt", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit0 <- cfa(HS.model, data = HolzingerSwineford1939, 
+              orthogonal = TRUE)
+  res <- lavTestLRT(fit1, fit0, type = "browne.residual.nt")
+  
+  expect_s3_class(res, "data.frame")
+})
+
+testthat::test_that("Returns dataframe when no errors present - browne.residual.adf", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit0 <- cfa(HS.model, data = HolzingerSwineford1939, 
+              orthogonal = TRUE)
+  res <- lavTestLRT(fit1, fit0, type = "browne.residual.adf")
+  
+  expect_s3_class(res, "data.frame")
+})
+
+testthat::test_that("Returns dataframe when no errors present - cf", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit0 <- cfa(HS.model, data = HolzingerSwineford1939, 
+              orthogonal = TRUE)
+  res <- lavTestLRT(fit1, fit0, type = "cf")
+  
+  expect_s3_class(res, "data.frame")
+})
+
+# methods
+testthat::test_that("Returns dataframe when no errors present - mean.var.adjusted.PLRT", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit0 <- cfa(HS.model, data = HolzingerSwineford1939, 
+              orthogonal = TRUE)
+  res <- lavTestLRT(fit1, fit0, method = "mean.var.adjusted.PLRT")
+  
+  expect_s3_class(res, "data.frame")
+})
