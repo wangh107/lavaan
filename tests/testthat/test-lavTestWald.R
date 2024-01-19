@@ -15,6 +15,27 @@ testthat::test_that("Returns a list when no issues present", {
   expect_type(a, "list")
 })
 
+testthat::test_that("Check values returned when no issues present", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+
+  fit <- cfa(HS.model, data=HolzingerSwineford1939)
+
+  # test 1: test about a single parameter
+  # this is the 'chi-square' version of the
+  # z-test from the summary() output
+  a <- lavTestWald(fit, constraints = "b1 == 0")
+  b <- list(stat = 30.842483,
+            df = 1,
+            p.value = 2.79844e-08,
+            se = 'standard')
+
+  expect_equal(b, a)
+})
+
 testthat::test_that("Returns list when no issues present - 2 conditions", {
   HS.model <- '
     visual  =~ x1 + b1*x2 + x3
