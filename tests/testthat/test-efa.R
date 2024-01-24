@@ -60,6 +60,17 @@ testthat::test_that("Working case using sample cov - 2", {
   expect_type(fit, "list")
 })
 
+testthat::test_that("Checking equivalence with sample cov - 3", {
+  data = cov(HolzingerSwineford1939[paste0("x", 1:9)])
+  
+  set.seed(1)
+  fit <- efa(sample.cov = data,
+             sample.nobs = 2)
+  fit1 <- efa(data = HolzingerSwineford1939[paste0("x", 1:9)])
+  expect_equal(fit$loadings, fit1$loadings, tolerance = 0.00001)
+})
+
+
 #no rotation
 testthat::test_that("Returns warning when errors present - rotation", {
   data = HolzingerSwineford1939
