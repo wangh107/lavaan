@@ -70,6 +70,15 @@ testthat::test_that("Checking verbose option", {
   expect_output(lavTestWald(fit, constraints = "b1 == 0", verbose = TRUE))
 })
 
+testthat::test_that("Returns error message if model doesn't converge", {
+  data = head(HolzingerSwineford1939, 6)
+  model_1 <- 'f =~ x1 + x2 + x3 + x4 + x5'
+  fit_1 <- suppressWarnings(cfa(model_1, data = data))
+  
+  expect_error(lavTestWald(fit_1, constraints = "b1 == 0"), 
+               label = "model did not converge")
+})
+
 testthat::test_that("Returns error message when constraints empty", {
   HS.model <- '
     visual  =~ x1 + b1*x2 + x3
