@@ -30,6 +30,12 @@ test_that("lavaan() handles incorrect syntax", {
   expect_error(lavaan(model, data=HolzingerSwineford1939))
 })
 
+test_that("lavaan() handles null formula", {
+  model <- NULL
+  expect_error(lavaan(model, data=HolzingerSwineford1939),
+               "model is NULL")
+})
+
 ## Data
 # test_that("lavaan() handles data frames correctly", {
 ## TODO
