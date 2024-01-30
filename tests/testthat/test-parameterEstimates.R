@@ -1,11 +1,5 @@
 # Basic functionality
 ## Note: integrate with fit functions
-library(lavaan)
-data = HolzingerSwineford1939
-model_1<- 'f  =~ x1 + x2 + x3 + x4 + x5 + x6+  x7 + x8 + x9 '
-fit_1 <- cfa(model_1, data = data)
-parameterEstimates(fit_1)
-
 test_that("parameterEstimates return the correct class", {
   HS.model <- 'visual  =~ x1 + x2 + x3 
               textual =~ x4 + x5 + x6
@@ -39,3 +33,5 @@ test_that("parameterEstimates and ParameterEstimates are simply alias", {
   res_2 <- parameterestimates(fit)
   expect_identical(res_1, res_2)
 })
+
+# Reproduce HolzingerSwineford1939
