@@ -44,6 +44,8 @@ test_that("lavaan() handles incorrect syntax", {
 # TODO
 # })
 
+# NOTE: lavMoments no where to be found
+
 test_that("lavaan() handles invalid data types: function", {
   model <- ' F1 =~ x1 + x2 + x3 '
   data_function <- function() data.frame(x1 = rnorm(100), x2 = rnorm(100), x3 = rnorm(100))
