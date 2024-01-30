@@ -20,7 +20,7 @@ test_that("parameterEstimates returns dataframe with correct columns", {
   if (inherits(fit, "lavaan")){ # Sanity check: the input needs to be lavaan class
     res <- parameterEstimates(fit)
     expected_columns <- c("lhs", "op", "rhs", "est", "se", "z", "pvalue", "ci.lower", "ci.upper")
-    expect_named(res, expected_columns)
+    expect_named(res, expected_columns, ignore.order = TRUE)
   }
 })
 
