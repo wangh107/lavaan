@@ -47,5 +47,5 @@ test_that("parameterTable does not modify the input object", {
   fit <- cfa(HS.model, data=HolzingerSwineford1939)
   original_fit <- fit
   result <- parameterTable(fit)
-  expect_equal(fit, original_object)
+  expect_equal(fit, original_fit)
 })
