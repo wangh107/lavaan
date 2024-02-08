@@ -95,7 +95,7 @@ testthat::test_that("Returns error message when constraints empty", {
                label = "constraints are empty")
 })
 
-#not the right error message but I don't think I'll ever be able to get to that line
+
 testthat::test_that("Returns error message when no equality constraints", {
   HS.model <- '
     visual  =~ x1 + b1*x2 + x3
