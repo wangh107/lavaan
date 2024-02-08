@@ -108,7 +108,7 @@ testthat::test_that("Returns error message when no equality constraints", {
   # test 1: test about a single parameter
   # this is the 'chi-square' version of the
   # z-test from the summary() output
-  expect_error(lavTestWald(fit, constraints = "0"),
+  expect_error(lavTestWald(fit, constraints = "b3=~x7"),
                label = "no equality constraints found in constraints argument")
 })
 
