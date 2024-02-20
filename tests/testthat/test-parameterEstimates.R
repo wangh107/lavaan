@@ -34,6 +34,60 @@ test_that("parameterEstimates and ParameterEstimates are simply alias", {
   expect_identical(res_1, res_2)
 })
 
+# Argument specification
+
+test_that("parameterEstimates handles 'se' argument correctly", {
+  HS.model <- 'visual  =~ x1 + x2 + x3 
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
+  fit <- cfa(HS.model, data=HolzingerSwineford1939)
+  pe_se <- parameterEstimates(fit, se = TRUE)
+  pe_nose <- parameterEstimates(fit, se = FALSE)
+  expect_true("se" %in% names(pe_se))
+  expect_false("se" %in% names(pe_nose))
+  # if FALSE, this implies zstat and pvalue and ci are also FALSE.
+  expect_false("z" %in% names(pe_nose))
+  expect_false("pvalue" %in% names(pe_nose))
+  expect_false("ci.lower" %in% names(pe_nose))
+  expect_false("ci.upper" %in% names(pe_nose))
+})
+
+test_that("parameterEstimates handles 'standardized' argument correctly", {
+  HS.model <- 'visual  =~ x1 + x2 + x3 
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
+  fit <- cfa(HS.model, data=HolzingerSwineford1939)
+  pe_standardized <- parameterEstimates(fit, standardized = TRUE)
+  pe_nonstandardized <- parameterEstimates(fit, standardized = FALSE)
+  expect_true("std.all" %in% names(pe_standardized))
+  expect_false("std.all" %in% names(pe_nonstandardized))
+})
+
+test_that("parameterEstimates handles 'ci' argument correctly", {
+  HS.model <- 'visual  =~ x1 + x2 + x3 
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
+  fit <- cfa(HS.model, data=HolzingerSwineford1939)
+  pe_ci <- parameterEstimates(fit, ci = TRUE)
+  pe_noci <- parameterEstimates(fit, ci = FALSE)
+  expect_true("ci.lower" %in% names(pe_ci) & "ci.upper" %in% names(pe_ci))
+  expect_false("ci.lower" %in% names(pe_noci) | "ci.upper" %in% names(pe_noci))
+})
+
+test_that("parameterEstimates handles 'output' argument correctly", {
+  HS.model <- 'visual  =~ x1 + x2 + x3 
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
+  fit <- cfa(HS.model, data=HolzingerSwineford1939)
+  pe_df <- parameterEstimates(fit, output = "data.frame")
+  pe_table <- parameterEstimates(fit, output = "table") # alias
+  expect_true(is.data.frame(pe_df))
+  pe_text <- parameterEstimates(fit, output = "text")
+  pe_pretty <- parameterEstimates(fit, output = "pretty") # alias
+  expect_true(is.character(pe_text) | is.list(pe_text))
+  expect_error(parameterEstimates(fit, output = "something"), "lavaan ERROR: output must be")
+})
+
 # Reproduce HolzingerSwineford1939
 test_that("parameterEstimate reproduce the result of HolzingerSwineford1939", {
   HS.model <- 'visual  =~ x1 + x2 + x3 
