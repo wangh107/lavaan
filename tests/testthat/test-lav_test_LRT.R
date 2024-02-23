@@ -113,18 +113,17 @@ testthat::test_that("Returns warning message when variables in models different"
 
   HS.model <- '
     visual  =~ x1 + b1*x2 + x3
-    textual =~ x4 + b2*x5 + x6
+
     speed   =~ x7 + b3*x8 + x9
 '
 
   HS.model1 <- '
-    visual  =~ x1 + b1*x2 + x3
+
     textual =~ x4 + b2*x5 + x6
 '
   fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
-  fit0 <- cfa(HS.model1, data = HolzingerSwineford1939,
-              orthogonal = TRUE)
-  expect_warning(lavTestLRT(fit1, type = "cf"),
+  fit0 <- cfa(HS.model1, data = HolzingerSwineford1939)
+  expect_warning(lavTestLRT(fit1, fit0, type = "chisq"),
                label = "some models are based on a different set of observed variables")
 })
 
@@ -151,12 +150,13 @@ testthat::test_that("Returns warning when not all models have converged", {
     model_1 <- 'f =~ x1 + x2 + x3 + x4 + x5'
     suppressWarnings({
       fit1 <- cfa(model_1, data = data)
+      fit0 <- cfa(model_1, data = data)
     })
 
-    expect_warning(
-    expect_warning(lavTestLRT(fit1),
-                 label = "model did not converge"),
-    label = "model did not converge")
+    expect_error(
+    expect_warning(lavTestLRT(fit1, fit0),
+                 label = "not all models converged"),
+    "missing value where TRUE/FALSE needed")
 })
 
 testthat::test_that("Returns warning message for no robust test statistics", {
@@ -235,3 +235,5 @@ testthat::test_that("Returns dataframe when no errors present - mean.var.adjuste
 
   expect_s3_class(res, "data.frame")
 })
+
+#select method -> if scaled and test in something (lines 140-142)
