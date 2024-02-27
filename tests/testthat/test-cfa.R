@@ -164,53 +164,25 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
   ## Parameter Estimates
   
   ## Latent Variables
-  # expected_paras <- data.frame(
-  #   ### Latent Variables
-  #   lhs = c(rep("visual", 3), rep("textual", 3), rep("speed", 3)),
-  #   op = rep("=~", 9),
-  #   rhs = paste0("x", 1:9),
-  #   ### Estimate
-  #   est = c(1.000, 0.554, 0.729, # visual
-  #           1.000, 1.113, 0.926, # textual
-  #           1.000, 1.180, 1.082), # speed
-  #   ### Std.Err
-  #   se = c(0.0, 0.100, 0.109, 0.0, 0.065, 0.055, 0.0, 0.165, 0.151),
-  #   ### z-value: added in parameterEstimates?
-  #   z = c(NA_real_, 5.554, 6.685, NA_real_, 17.014, 16.703, NA_real_, 7.152, 7.155),
-  #   ### p value: added in parameterEstimates
-  # )
-  # expect_equal(as.data.frame(fit@ParTable)[1:9,c("lhs","op","rhs","est","se")], 
-  #              expected_paras, 
-  #              tolerance = 0.001,
-  #              expected.label = "Parameter Estimates: Latent Variables")
-  # ## Variances
-  # expected_var <- data.frame(
-  #   ### Latent Variables
-  #   lhs = c(paste0("x", 1:9),"visual","textual","speed"),
-  #   op = rep("~~", 12),
-  #   rhs = c(paste0("x", 1:9),"visual","textual","speed"),
-  #   ### Estimate
-  #   est = c(0.549, 1.134, 0.844, 0.371, 0.446, 0.356, 0.799, 0.488, 0.566, 0.809, 0.979, 0.384),
-  #   ### Std.Err
-  #   se = c(0.114, 0.102, 0.091, 0.048, 0.058, 0.043, 0.081, 0.074, 0.071, 0.145, 0.012, 0.086)
-  # )
-  # expect_equal(as.data.frame(fit@ParTable)[10:21,c("lhs","op","rhs","est","se")], 
-  #              expected_var, 
-  #              tolerance = 0.001,
-  #              expected.label = "Parameter Estimates: Variances")
-  # ## Covariance
-  # expected_cov <- data.frame(
-  #   ### Latent Variables
-  #   lhs = c("visual", "visual", "textual"),
-  #   op = rep("~~", 3),
-  #   rhs = c("textual", "speed", "speed"),
-  #   ### Estimate
-  #   est = c(0.408, 0.262, 0.173),
-  #   ### Std.Err
-  #   se = c(0.074, 0.056, 0.049)
-  # )
-  # expect_equal(as.data.frame(fit@ParTable)[22:24,c("lhs","op","rhs","est","se")], 
-  #              expected_cov, 
-  #              tolerance = 0.001,
-  #              expected.label = "Parameter Estimates: Covariance")
+  expected_df <- data.frame(
+    lhs = c(
+      rep("visual", 3), rep("textual", 3), rep("speed", 3), paste0("x", 1:9),
+      "visual", "textual", "speed", "visual", "visual", "textual"
+    ),
+    op = c(rep("=~", 9), rep("~~", 15)),
+    rhs = c(
+      paste0("x", 1:9), paste0("x", 1:9), "visual", "textual", "speed", "textual", "speed", "speed"
+    ),
+    est = c(1.000, 0.554, 0.729, 1.000, 1.113, 0.926, 1.000, 1.180, 1.082, 0.549, 1.134, 0.844, 0.371, 0.446, 0.356, 0.799, 0.488, 0.566, 0.809, 0.979, 0.384, 0.408, 0.262, 0.173),
+    se = c(0.000, 0.100, 0.109, 0.000, 0.065, 0.055, 0.000, 0.165, 0.151, 0.114, 0.102, 0.091, 0.048, 0.058, 0.043, 0.081, 0.074, 0.071, 0.145, 0.112, 0.086, 0.074, 0.056, 0.049),
+    z = c(NA_real_, 5.554, 6.685, NA_real_, 17.014, 16.703, NA_real_, 7.152, 7.155, 4.833, 11.146, 9.317, 7.779, 7.642, 8.277, 9.823, 6.573, 8.003, 5.564, 8.737, 4.451, 5.552, 4.660, 3.518),
+    pvalue = c(NA_real_, 0, 0, NA_real_, 0, 0, NA_real_, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    stringsAsFactors = FALSE
+  )
+  output_df <- res$pe %>% 
+    mutate(across(where(is.numeric), \(x) round(x, digits = 3))) %>% # round to 3 digits
+    select("lhs","op","rhs","est","se","z","pvalue")
+  expect_identical(output_df, expected_df,
+                   label = "Output Parameter Estimates",
+                   expected.label = "Expected Parameter Estimates")
 })
