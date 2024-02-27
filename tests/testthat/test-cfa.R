@@ -93,51 +93,74 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
                textual =~ x4 + x5 + x6
                speed   =~ x7 + x8 + x9'
   fit <- cfa(HS.model, data = HolzingerSwineford1939)
+  res <- summary(fit, fit.measures = TRUE)
   # Enumerate fields
   ## Header
-  ## Model Test User Model: fit@test$standard
-  expect_equal(fit@test[["standard"]][["refdistr"]], "chisq",
+  ## Model Test User Model
+  expect_equal(res$test$standard$refdistr, "chisq",
                info = "standard test is Chi Square")
-  expect_equal(fit@test[["standard"]][["stat"]], 85.306, 
+  expect_equal(res$test$standard$stat, 85.306, 
                tolerance = 0.001, 
                expected.label = "Model Test User Model: Test statistic")
-  expect_equal(fit@test[["standard"]][["df"]], 24,
+  expect_equal(res$test$standard$df, 24,
                expected.label = "Model Test User Model: Degrees of freedom")
-  expect_equal(fit@test[["standard"]][["pvalue"]], 0.000,
+  expect_equal(res$test$standard$pvalue, 0.000,
                tolerance = 0.001,
                expected.label = "Model Test User Model: P-value (Chi-square)")
-  ## Model Test Baseline Model: fit@baseline$test$standard
-  # Requires fitmeasures
-  # expect_equal(fit@baseline[["test"]][["standard"]][["refdistr"]], "chisq",
-  #              info = "standard test is Chi Square")
-  # expect_equal(fit@baseline[["test"]][["standard"]][["stat"]], 918.852,
-  #              tolerance = 0.001,
-  #              expected.label = "Model Test Baseline Model: Test statistic")
-  # expect_equal(fit@test[["test"]][["standard"]][["df"]], 36,
-  #              expected.label = "Model Test Baseline Model: Degrees of freedom")
-  # expect_equal(fit@test[["test"]][["standard"]][["pvalue"]], 0.000,
-  #              tolerance = 0.001,
-  #              expected.label = "Model Test Baseline Model: P-value (Chi-square)")
+  ## Model Test Baseline Model
+  # Requires summary - fitmeasures
+  expect_equal(res$fit[["baseline.chisq"]], 918.852,
+               tolerance = 0.001,
+               expected.label = "Model Test Baseline Model: Test statistic")
+  expect_equal(res$fit[["baseline.df"]], 36,
+               expected.label = "Model Test Baseline Model: Degrees of freedom")
+  expect_equal(res$fit[["baseline.pvalue"]], 0.000,
+               tolerance = 0.001,
+               expected.label = "Model Test Baseline Model: P-value (Chi-square)")
   ## User Model vs Baseline Model
-  
+  expect_equal(res$fit[['cfi']], 0.931,
+               tolerance = 0.001,
+               expected.label = "Comparative Fit Index (CFI)")
+  expect_equal(res$fit[['tli']], 0.896,
+               tolerance = 0.001,
+               expected.label = "Tucker-Lewis Index (TLI)")
   ## Loglikelihood and Information Criteria: fit@loglik
-  expect_equal(fit@loglik[["loglik"]], -3737.745,
+  expect_equal(res$fit[['logl']], -3737.745,
                tolerance = 0.001,
                expected.label = "Loglikelihood and Information Criteria: Loglikelihood user model (H0)")
+  expect_equal(res$fit[['unrestricted.logl']], -3695.092,
+               tolerance = 0.001,
+               expected.label = "Loglikelihood and Information Criteria: Loglikelihood unrestricted model (H1)")
   ### Loglikelihood unrestricted model (H1)      -3695.092
-  expect_equal(fit@loglik[["AIC"]], 7517.490,
+  expect_equal(res$fit[['aic']], 7517.490,
                tolerance = 0.001,
                expected.label = "Loglikelihood and Information Criteria: Akaike (AIC)")
-  expect_equal(fit@loglik[["BIC"]], 7595.339,
+  expect_equal(res$fit[['bic']], 7595.339,
                tolerance = 0.001,
                expected.label = "Loglikelihood and Information Criteria :Bayesian (BIC)")
-  expect_equal(fit@loglik[["BIC2"]], 7528.739,
+  expect_equal(res$fit[['bic2']], 7528.739,
                tolerance = 0.001,
                expected.label = "Loglikelihood and Information Criteria: Sample-size adjusted Bayesian (SABIC)")
   ## Root Mean Square Error of Approximation
-  
+  expect_equal(res$fit[['rmsea']], 0.092,
+               tolerance = 0.001,
+               expected.label = "Root Mean Square Error of Approximation: RMSEA")
+  expect_equal(res$fit[['rmsea.ci.lower']], 0.071,
+               tolerance = 0.001,
+               expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - lower")
+  expect_equal(res$fit[['rmsea.ci.upper']], 0.114,
+               tolerance = 0.001,
+               expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - upper")
+  expect_equal(res$fit[['rmsea.pvalue']], 0.001,
+               tolerance = 0.001,
+               expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA <= 0.050")
+  expect_equal(res$fit[['rmsea.notclose.pvalue.scaled']], 0.840,
+               tolerance = 0.001,
+               expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA >= 0.080")
   ## Standardized Root Mean Square Residual
-  
+  expect_equal(res$fit[['srmr']], 0.065,
+               tolerance = 0.001,
+               expected.label = "Standardized Root Mean Square Residual: SRMR")
   ## Parameter Estimates
   
   ## Latent Variables
