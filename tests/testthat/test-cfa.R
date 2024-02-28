@@ -164,7 +164,7 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
   ## Parameter Estimates
   
   ## Latent Variables
-  expected_df <- data.frame(
+  expected_params <- data.frame(
     lhs = c(
       rep("visual", 3), rep("textual", 3), rep("speed", 3), paste0("x", 1:9),
       "visual", "textual", "speed", "visual", "visual", "textual"
@@ -179,10 +179,10 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
     pvalue = c(NA_real_, 0, 0, NA_real_, 0, 0, NA_real_, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
     stringsAsFactors = FALSE
   )
-  output_df <- res$pe %>% 
-    mutate(across(where(is.numeric), \(x) round(x, digits = 3))) %>% # round to 3 digits
-    select("lhs","op","rhs","est","se","z","pvalue")
-  expect_identical(output_df, expected_df,
+  output_params <- res$pe %>% 
+    dplyr::mutate(across(where(is.numeric), \(x) round(x, digits = 3))) %>% # round to 3 digits
+    dplyr::select("lhs","op","rhs","est","se","z","pvalue")
+  expect_identical(output_params, expected_params,
                    label = "Output Parameter Estimates",
                    expected.label = "Expected Parameter Estimates")
 })
