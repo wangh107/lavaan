@@ -205,6 +205,20 @@ testthat::test_that("Returns dataframe when no errors present - browne.residual.
   expect_s3_class(res, "data.frame")
 })
 
+testthat::test_that("Returns error message with invalid type", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit0 <- cfa(HS.model, data = HolzingerSwineford1939,
+              orthogonal = TRUE)
+  
+  expect_error(lavTestLRT(fit1, fit0, type = "hello"), 
+               label = "test type unknown")
+})
+
 ## TODO: test for CF wasn't working in any way. find out why and write it
 
 # methods
@@ -231,9 +245,39 @@ testthat::test_that("Returns dataframe when no errors present - mean.var.adjuste
   fit1 <- cfa(HS.model, data = HolzingerSwineford1939, estimator = "PML")
   fit0 <- cfa(HS.model, data = HolzingerSwineford1939,
               orthogonal = TRUE, estimator = "PML")
-  res <- lavTestLRT(fit1, fit0, method = "mean.var.adjusted.PLRT")
+  res <- lavTestLRT(fit1, fit0, method = "default")
 
   expect_s3_class(res, "data.frame")
 })
 
 #select method -> if scaled and test in something (lines 140-142)
+
+testthat::test_that("Returns dataframe when no errors present - 
+                    method = default and test = satorra.bentler", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+  fit1 <- cfa(HS.model, data = HolzingerSwineford1939, test = "satorra.bentler")
+  fit0 <- cfa(HS.model, data = HolzingerSwineford1939,
+              orthogonal = TRUE, test = "satorra.bentler")
+  res <- lavTestLRT(fit1, fit0, method = "default", scaled.shifted = TRUE )
+  
+  expect_s3_class(res, "data.frame")
+})
+
+testthat::test_that("Returns dataframe when no errors present - 
+                    method = default and no test", {
+  HS.model <- '
+    visual  =~ x1 + b1*x2 + x3
+    textual =~ x4 + b2*x5 + x6
+    speed   =~ x7 + b3*x8 + x9
+'
+  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit0 <- cfa(HS.model, data = HolzingerSwineford1939,
+              orthogonal = TRUE)
+  res <- lavTestLRT(fit1, fit0, method = "default", scaled.shifted = TRUE )
+  
+  expect_s3_class(res, "data.frame")
+})
