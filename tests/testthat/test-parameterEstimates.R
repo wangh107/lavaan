@@ -192,5 +192,7 @@ test_that("parameterEstimate reproduce the result of HolzingerSwineford1939", {
     ci.upper = c(1.000, 0.749, 0.943, 1.000, 1.241, 1.035, 1.000, 1.503, 1.378, 0.772, 1.333, 1.022, 0.465, 0.561, 0.441, 0.959, 0.633, 0.705, 1.094, 1.199, 0.553, 0.552, 0.373, 0.270),
     stringsAsFactors = FALSE
   )
-  expect_identical(res %>% as.data.frame(), ref_df, tolerance = 0.01)
+  output_df <- res %>% as.data.frame() %>%
+    dplyr::mutate(across(where(is.numeric), \(x) round(x, digits = 3)))
+  expect_identical(output_df, ref_df)
 })
