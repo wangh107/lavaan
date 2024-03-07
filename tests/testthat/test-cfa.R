@@ -99,67 +99,50 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
   ## Model Test User Model
   expect_equal(res$test$standard$refdistr, "chisq",
                info = "standard test is Chi Square")
-  expect_equal(res$test$standard$stat, 85.306, 
-               tolerance = 0.001, 
+  expect_equal(res$test$standard$stat %>% round(.,3), 85.306, 
                expected.label = "Model Test User Model: Test statistic")
   expect_equal(res$test$standard$df, 24,
                expected.label = "Model Test User Model: Degrees of freedom")
-  expect_equal(res$test$standard$pvalue, 0.000,
-               tolerance = 0.001,
+  expect_equal(res$test$standard$pvalue %>% round(.,3), 0.000,
                expected.label = "Model Test User Model: P-value (Chi-square)")
   ## Model Test Baseline Model
   # Requires summary - fitmeasures
-  expect_equal(res$fit[["baseline.chisq"]], 918.852,
-               tolerance = 0.001,
+  expect_equal(res$fit[["baseline.chisq"]] %>% round(.,3), 918.852,
                expected.label = "Model Test Baseline Model: Test statistic")
   expect_equal(res$fit[["baseline.df"]], 36,
                expected.label = "Model Test Baseline Model: Degrees of freedom")
-  expect_equal(res$fit[["baseline.pvalue"]], 0.000,
-               tolerance = 0.001,
+  expect_equal(res$fit[["baseline.pvalue"]] %>% round(.,3), 0.000,
                expected.label = "Model Test Baseline Model: P-value (Chi-square)")
   ## User Model vs Baseline Model
-  expect_equal(res$fit[['cfi']], 0.931,
-               tolerance = 0.001,
+  expect_equal(res$fit[['cfi']] %>% round(.,3), 0.931,
                expected.label = "Comparative Fit Index (CFI)")
-  expect_equal(res$fit[['tli']], 0.896,
-               tolerance = 0.001,
+  expect_equal(res$fit[['tli']] %>% round(.,3), 0.896,
                expected.label = "Tucker-Lewis Index (TLI)")
   ## Loglikelihood and Information Criteria: fit@loglik
-  expect_equal(res$fit[['logl']], -3737.745,
-               tolerance = 0.001,
+  expect_equal(res$fit[['logl']] %>% round(.,3), -3737.745,
                expected.label = "Loglikelihood and Information Criteria: Loglikelihood user model (H0)")
-  expect_equal(res$fit[['unrestricted.logl']], -3695.092,
-               tolerance = 0.001,
+  expect_equal(res$fit[['unrestricted.logl']] %>% round(.,3), -3695.092,
                expected.label = "Loglikelihood and Information Criteria: Loglikelihood unrestricted model (H1)")
   ### Loglikelihood unrestricted model (H1)      -3695.092
-  expect_equal(res$fit[['aic']], 7517.490,
-               tolerance = 0.001,
+  expect_equal(res$fit[['aic']] %>% round(.,3), 7517.490,
                expected.label = "Loglikelihood and Information Criteria: Akaike (AIC)")
-  expect_equal(res$fit[['bic']], 7595.339,
-               tolerance = 0.001,
+  expect_equal(res$fit[['bic']] %>% round(.,3), 7595.339,
                expected.label = "Loglikelihood and Information Criteria :Bayesian (BIC)")
-  expect_equal(res$fit[['bic2']], 7528.739,
-               tolerance = 0.001,
+  expect_equal(res$fit[['bic2']] %>% round(.,3), 7528.739,
                expected.label = "Loglikelihood and Information Criteria: Sample-size adjusted Bayesian (SABIC)")
   ## Root Mean Square Error of Approximation
-  expect_equal(res$fit[['rmsea']], 0.092,
-               tolerance = 0.001,
+  expect_equal(res$fit[['rmsea']] %>% round(.,3), 0.092,
                expected.label = "Root Mean Square Error of Approximation: RMSEA")
-  expect_equal(res$fit[['rmsea.ci.lower']], 0.071,
-               tolerance = 0.001,
+  expect_equal(res$fit[['rmsea.ci.lower']] %>% round(.,3), 0.071,
                expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - lower")
-  expect_equal(res$fit[['rmsea.ci.upper']], 0.114,
-               tolerance = 0.001,
+  expect_equal(res$fit[['rmsea.ci.upper']] %>% round(.,3), 0.114,
                expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - upper")
-  expect_equal(res$fit[['rmsea.pvalue']], 0.001,
-               tolerance = 0.001,
+  expect_equal(res$fit[['rmsea.pvalue']] %>% round(.,3), 0.001,
                expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA <= 0.050")
-  expect_equal(res$fit[['rmsea.notclose.pvalue.scaled']], 0.840,
-               tolerance = 0.001,
+  expect_equal(res$fit[['rmsea.notclose.pvalue.scaled']] %>% round(.,3), 0.840,
                expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA >= 0.080")
   ## Standardized Root Mean Square Residual
-  expect_equal(res$fit[['srmr']], 0.065,
-               tolerance = 0.001,
+  expect_equal(res$fit[['srmr']] %>% round(.,3), 0.065,
                expected.label = "Standardized Root Mean Square Residual: SRMR")
   ## Parameter Estimates
   
