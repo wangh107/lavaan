@@ -51,7 +51,7 @@ test_that("cfa() function with and without explicit arguments (i.e. default argu
                    info = "Note: test require summary() to work properly, also check summary()")
 })
 
-test_that("cfa() and lavaan() with the specified argument are equivalent", {
+test_that("cfa() and lavaan() with the specified (auto) argument are equivalent", {
   set.seed(42)
   HS.model <- 'visual  =~ x1 + x2 + x3
                textual =~ x4 + x5 + x6
@@ -59,16 +59,16 @@ test_that("cfa() and lavaan() with the specified argument are equivalent", {
   fit_cfa <- cfa(HS.model, data = HolzingerSwineford1939)
   # copy from documentation
   fit_lavaan <- lavaan(HS.model, data = HolzingerSwineford1939, 
-                    int.ov.free = TRUE, 
-                    int.lv.free = FALSE, 
-                    auto.fix.first = TRUE, 
-                    auto.fix.single = TRUE, 
-                    auto.var = TRUE, 
-                    auto.cov.lv.x = TRUE, 
-                    auto.efa = TRUE, 
-                    auto.th = TRUE, 
-                    auto.delta = TRUE, 
-                    auto.cov.y = TRUE)
+                       int.ov.free = TRUE, 
+                       int.lv.free = FALSE, 
+                       auto.fix.first = TRUE, 
+                       auto.fix.single = TRUE, 
+                       auto.var = TRUE, 
+                       auto.cov.lv.x = TRUE, 
+                       auto.efa = TRUE, 
+                       auto.th = TRUE, 
+                       auto.delta = TRUE, 
+                       auto.cov.y = TRUE)
   # Compare captured calls
   call_cfa <- attr(fit_cfa, "call") %>% as.list()
   call_lavaan <- attr(fit_lavaan, "call") %>% as.list()
@@ -85,7 +85,47 @@ test_that("cfa() and lavaan() with the specified argument are equivalent", {
                    info = "Note: test require summary() to work properly, also check summary()")
 })
 
+## See page 12 of lavaan: An R Package for Structural Equation Modeling
+test_that("cfa() and lavaan() with the full specified model are equivalent", {
+  set.seed(42)
+  HS.model <- 'visual  =~ x1 + x2 + x3
+               textual =~ x4 + x5 + x6
+               speed   =~ x7 + x8 + x9'
+  HS.model.full <- '# latent variables 
+                    visual =~ 1*x1 + x2 + x3
+                    textual =~ 1*x4 + x5 + x6
+                    speed =~ 1*x7 + x8 + x9
+                    # residual variances observed variables
+                    x1 ~~ x1
+                    x2 ~~ x2
+                    x3 ~~ x3
+                    x4 ~~ x4
+                    x5 ~~ x5
+                    x6 ~~ x6
+                    x7 ~~ x7
+                    x8 ~~ x8
+                    x9 ~~ x9
+                    # factor variances
+                    visual ~~ visual
+                    textual ~~ textual
+                    speed ~~ speed
+                    # factor covariances
+                    visual ~~ textual + speed
+                    textual ~~ speed'
+  fit_cfa <- cfa(HS.model, data = HolzingerSwineford1939)
+  # copy from documentation
+  fit_lavaan <- lavaan(HS.model.full, data = HolzingerSwineford1939)
+  # For simplicity sake, only compare summary of the output
+  # Require: summary work as intended
+  summary_cfa <- summary(fit_cfa)
+  summary_lavaan <- summary(fit_lavaan)
+  expect_identical(summary_cfa, summary_lavaan,
+                   info = "Note: test require summary() to work properly, also check summary()")
+})
+
 # TODO: test relationship between std.lv and auto.fit.first
+
+# TODO: add integration with fitMeasures and parameterEstimates
 
 ## Bad arguments
 test_that("cfa() returns error for invalid model parameter", {
@@ -101,6 +141,8 @@ test_that("cfa() returns error for invalid data parameter", {
 })
 
 # Reproducibility test
+## See https://lavaan.ugent.be/tutorial/cfa.html
+## Also page 14-15 of lavaan: An R Package for Structural Equation Modeling
 test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
   HS.model <- 'visual  =~ x1 + x2 + x3
                textual =~ x4 + x5 + x6
