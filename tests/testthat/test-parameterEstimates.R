@@ -52,6 +52,28 @@ test_that("parameterEstimates handles 'se' argument correctly", {
   expect_false("ci.upper" %in% names(pe_nose))
 })
 
+test_that("parameterEstimates handles 'zstat' argument correctly", {
+  HS.model <- 'visual  =~ x1 + x2 + x3 
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
+  fit <- cfa(HS.model, data=HolzingerSwineford1939)
+  pe_zstat <- parameterEstimates(fit, zstat = TRUE)
+  pe_nozstat <- parameterEstimates(fit, zstat = FALSE)
+  expect_true("z" %in% names(pe_zstat))
+  expect_false("z" %in% names(pe_nozstat))
+})
+
+test_that("parameterEstimates handles 'pvalue' argument correctly", {
+  HS.model <- 'visual  =~ x1 + x2 + x3 
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
+  fit <- cfa(HS.model, data=HolzingerSwineford1939)
+  pe_pvalue <- parameterEstimates(fit, pvalue = TRUE)
+  pe_nopvalue <- parameterEstimates(fit, pvalue = FALSE)
+  expect_true("pvalue" %in% names(pe_pvalue))
+  expect_false("pvalue" %in% names(pe_nopvalue))
+})
+
 test_that("parameterEstimates handles 'standardized' argument correctly", {
   HS.model <- 'visual  =~ x1 + x2 + x3 
               textual =~ x4 + x5 + x6
