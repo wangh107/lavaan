@@ -1,16 +1,16 @@
 # Basic functionality
 test_that("cfa() returns the correct class", {
-  model <- 'visual  =~ x1 + x2 + x3
+  model <- "visual  =~ x1 + x2 + x3
             textual =~ x4 + x5 + x6
-            speed   =~ x7 + x8 + x9'
+            speed   =~ x7 + x8 + x9"
   fit <- cfa(model, data = HolzingerSwineford1939)
   expect_s4_class(fit, "lavaan")
 })
 
 test_that("cfa() records the correct call", {
-  model <- 'visual  =~ x1 + x2 + x3
+  model <- "visual  =~ x1 + x2 + x3
             textual =~ x4 + x5 + x6
-            speed   =~ x7 + x8 + x9'
+            speed   =~ x7 + x8 + x9"
   fit <- cfa(model, data = HolzingerSwineford1939)
   expect_equal(fit@call$model.type, "cfa")
 })
@@ -18,80 +18,88 @@ test_that("cfa() records the correct call", {
 # Arguments
 test_that("cfa() function with and without explicit arguments (i.e. default arguments) are equivalent", {
   set.seed(42)
-  HS.model <- 'visual  =~ x1 + x2 + x3
+  HS.model <- "visual  =~ x1 + x2 + x3
                textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9'
+               speed   =~ x7 + x8 + x9"
   fit_default <- cfa(HS.model, data = HolzingerSwineford1939)
-  fit_explicit <- cfa(HS.model, data = HolzingerSwineford1939, 
-                      int.ov.free = TRUE, 
-                      int.lv.free = FALSE, 
-                      auto.fix.first = TRUE, 
-                      auto.fix.single = TRUE, 
-                      auto.var = TRUE, 
-                      auto.cov.lv.x = TRUE, 
-                      auto.efa = TRUE, 
-                      auto.th = TRUE, 
-                      auto.delta = TRUE, 
-                      auto.cov.y = TRUE)
+  fit_explicit <- cfa(HS.model,
+    data = HolzingerSwineford1939,
+    int.ov.free = TRUE,
+    int.lv.free = FALSE,
+    auto.fix.first = TRUE,
+    auto.fix.single = TRUE,
+    auto.var = TRUE,
+    auto.cov.lv.x = TRUE,
+    auto.efa = TRUE,
+    auto.th = TRUE,
+    auto.delta = TRUE,
+    auto.cov.y = TRUE
+  )
   # Compare captured calls
   call_default <- attr(fit_default, "call") %>% as.list()
   call_explicit <- attr(fit_explicit, "call") %>% as.list()
-  
+
   for (arg in names(call_default)) {
     if (arg %in% c("", "model", "data")) next
     expect_identical(call_default[[arg]], call_explicit[[arg]],
-                     info = paste0(arg, " in function calls"))
+      info = paste0(arg, " in function calls")
+    )
   }
-  args_default <- 
-  # For simplicity sake, only compare summary of the output
-  # Require: summary work as intended
-  summary_default <- summary(fit_default)
+  args_default <-
+    # For simplicity sake, only compare summary of the output
+    # Require: summary work as intended
+    summary_default <- summary(fit_default)
   summary_explicit <- summary(fit_explicit)
   expect_identical(summary_default, summary_explicit,
-                   info = "Note: test require summary() to work properly, also check summary()")
+    info = "Note: test require summary() to work properly, also check summary()"
+  )
 })
 
 test_that("cfa() and lavaan() with the specified (auto) argument are equivalent", {
   set.seed(42)
-  HS.model <- 'visual  =~ x1 + x2 + x3
+  HS.model <- "visual  =~ x1 + x2 + x3
                textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9'
+               speed   =~ x7 + x8 + x9"
   fit_cfa <- cfa(HS.model, data = HolzingerSwineford1939)
   # copy from documentation
-  fit_lavaan <- lavaan(HS.model, data = HolzingerSwineford1939, 
-                       int.ov.free = TRUE, 
-                       int.lv.free = FALSE, 
-                       auto.fix.first = TRUE, 
-                       auto.fix.single = TRUE, 
-                       auto.var = TRUE, 
-                       auto.cov.lv.x = TRUE, 
-                       auto.efa = TRUE, 
-                       auto.th = TRUE, 
-                       auto.delta = TRUE, 
-                       auto.cov.y = TRUE)
+  fit_lavaan <- lavaan(HS.model,
+    data = HolzingerSwineford1939,
+    int.ov.free = TRUE,
+    int.lv.free = FALSE,
+    auto.fix.first = TRUE,
+    auto.fix.single = TRUE,
+    auto.var = TRUE,
+    auto.cov.lv.x = TRUE,
+    auto.efa = TRUE,
+    auto.th = TRUE,
+    auto.delta = TRUE,
+    auto.cov.y = TRUE
+  )
   # Compare captured calls
   call_cfa <- attr(fit_cfa, "call") %>% as.list()
   call_lavaan <- attr(fit_lavaan, "call") %>% as.list()
   for (arg in names(call_cfa)) {
     if (arg %in% c("", "model", "data", "model.type")) next
     expect_identical(call_cfa[[arg]], call_lavaan[[arg]],
-                     info = paste0(arg, " in function calls"))
+      info = paste0(arg, " in function calls")
+    )
   }
   # For simplicity sake, only compare summary of the output
   # Require: summary work as intended
   summary_cfa <- summary(fit_cfa)
   summary_lavaan <- summary(fit_lavaan)
   expect_identical(summary_cfa, summary_lavaan,
-                   info = "Note: test require summary() to work properly, also check summary()")
+    info = "Note: test require summary() to work properly, also check summary()"
+  )
 })
 
 ## See page 12 of lavaan: An R Package for Structural Equation Modeling
 test_that("cfa() and lavaan() with the full specified model are equivalent", {
   set.seed(42)
-  HS.model <- 'visual  =~ x1 + x2 + x3
+  HS.model <- "visual  =~ x1 + x2 + x3
                textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9'
-  HS.model.full <- '# latent variables 
+               speed   =~ x7 + x8 + x9"
+  HS.model.full <- "# latent variables
                     visual =~ 1*x1 + x2 + x3
                     textual =~ 1*x4 + x5 + x6
                     speed =~ 1*x7 + x8 + x9
@@ -111,7 +119,7 @@ test_that("cfa() and lavaan() with the full specified model are equivalent", {
                     speed ~~ speed
                     # factor covariances
                     visual ~~ textual + speed
-                    textual ~~ speed'
+                    textual ~~ speed"
   fit_cfa <- cfa(HS.model, data = HolzingerSwineford1939)
   # copy from documentation
   fit_lavaan <- lavaan(HS.model.full, data = HolzingerSwineford1939)
@@ -120,7 +128,8 @@ test_that("cfa() and lavaan() with the full specified model are equivalent", {
   summary_cfa <- summary(fit_cfa)
   summary_lavaan <- summary(fit_lavaan)
   expect_identical(summary_cfa, summary_lavaan,
-                   info = "Note: test require summary() to work properly, also check summary()")
+    info = "Note: test require summary() to work properly, also check summary()"
+  )
 })
 
 # TODO: test relationship between std.lv and auto.fit.first
@@ -133,10 +142,10 @@ test_that("cfa() returns error for invalid model parameter", {
 })
 
 test_that("cfa() returns error for invalid data parameter", {
-  HS.model <- 'visual  =~ x1 + x2 + x3
+  HS.model <- "visual  =~ x1 + x2 + x3
                textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9'
-  random_data <- c(1,2,3,4,5)
+               speed   =~ x7 + x8 + x9"
+  random_data <- c(1, 2, 3, 4, 5)
   expect_error(cfa(HS.model, data = random_data))
 })
 
@@ -144,63 +153,83 @@ test_that("cfa() returns error for invalid data parameter", {
 ## See https://lavaan.ugent.be/tutorial/cfa.html
 ## Also page 14-15 of lavaan: An R Package for Structural Equation Modeling
 test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
-  HS.model <- 'visual  =~ x1 + x2 + x3
+  HS.model <- "visual  =~ x1 + x2 + x3
                textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9'
+               speed   =~ x7 + x8 + x9"
   fit <- cfa(HS.model, data = HolzingerSwineford1939)
   res <- summary(fit, fit.measures = TRUE)
   # Enumerate fields
   ## Header
   ## Model Test User Model
   expect_equal(res$test$standard$refdistr, "chisq",
-               info = "standard test is Chi Square")
-  expect_equal(res$test$standard$stat %>% round(.,3), 85.306, 
-               expected.label = "Model Test User Model: Test statistic")
+    info = "standard test is Chi Square"
+  )
+  expect_equal(res$test$standard$stat %>% round(., 3), 85.306,
+    expected.label = "Model Test User Model: Test statistic"
+  )
   expect_equal(res$test$standard$df, 24,
-               expected.label = "Model Test User Model: Degrees of freedom")
-  expect_equal(res$test$standard$pvalue %>% round(.,3), 0.000,
-               expected.label = "Model Test User Model: P-value (Chi-square)")
+    expected.label = "Model Test User Model: Degrees of freedom"
+  )
+  expect_equal(res$test$standard$pvalue %>% round(., 3), 0.000,
+    expected.label = "Model Test User Model: P-value (Chi-square)"
+  )
   ## Model Test Baseline Model
   # Requires summary - fitmeasures
-  expect_equal(res$fit[["baseline.chisq"]] %>% round(.,3), 918.852,
-               expected.label = "Model Test Baseline Model: Test statistic")
+  expect_equal(res$fit[["baseline.chisq"]] %>% round(., 3), 918.852,
+    expected.label = "Model Test Baseline Model: Test statistic"
+  )
   expect_equal(res$fit[["baseline.df"]], 36,
-               expected.label = "Model Test Baseline Model: Degrees of freedom")
-  expect_equal(res$fit[["baseline.pvalue"]] %>% round(.,3), 0.000,
-               expected.label = "Model Test Baseline Model: P-value (Chi-square)")
+    expected.label = "Model Test Baseline Model: Degrees of freedom"
+  )
+  expect_equal(res$fit[["baseline.pvalue"]] %>% round(., 3), 0.000,
+    expected.label = "Model Test Baseline Model: P-value (Chi-square)"
+  )
   ## User Model vs Baseline Model
-  expect_equal(res$fit[['cfi']] %>% round(.,3), 0.931,
-               expected.label = "Comparative Fit Index (CFI)")
-  expect_equal(res$fit[['tli']] %>% round(.,3), 0.896,
-               expected.label = "Tucker-Lewis Index (TLI)")
+  expect_equal(res$fit[["cfi"]] %>% round(., 3), 0.931,
+    expected.label = "Comparative Fit Index (CFI)"
+  )
+  expect_equal(res$fit[["tli"]] %>% round(., 3), 0.896,
+    expected.label = "Tucker-Lewis Index (TLI)"
+  )
   ## Loglikelihood and Information Criteria: fit@loglik
-  expect_equal(res$fit[['logl']] %>% round(.,3), -3737.745,
-               expected.label = "Loglikelihood and Information Criteria: Loglikelihood user model (H0)")
-  expect_equal(res$fit[['unrestricted.logl']] %>% round(.,3), -3695.092,
-               expected.label = "Loglikelihood and Information Criteria: Loglikelihood unrestricted model (H1)")
+  expect_equal(res$fit[["logl"]] %>% round(., 3), -3737.745,
+    expected.label = "Loglikelihood and Information Criteria: Loglikelihood user model (H0)"
+  )
+  expect_equal(res$fit[["unrestricted.logl"]] %>% round(., 3), -3695.092,
+    expected.label = "Loglikelihood and Information Criteria: Loglikelihood unrestricted model (H1)"
+  )
   ### Loglikelihood unrestricted model (H1)      -3695.092
-  expect_equal(res$fit[['aic']] %>% round(.,3), 7517.490,
-               expected.label = "Loglikelihood and Information Criteria: Akaike (AIC)")
-  expect_equal(res$fit[['bic']] %>% round(.,3), 7595.339,
-               expected.label = "Loglikelihood and Information Criteria :Bayesian (BIC)")
-  expect_equal(res$fit[['bic2']] %>% round(.,3), 7528.739,
-               expected.label = "Loglikelihood and Information Criteria: Sample-size adjusted Bayesian (SABIC)")
+  expect_equal(res$fit[["aic"]] %>% round(., 3), 7517.490,
+    expected.label = "Loglikelihood and Information Criteria: Akaike (AIC)"
+  )
+  expect_equal(res$fit[["bic"]] %>% round(., 3), 7595.339,
+    expected.label = "Loglikelihood and Information Criteria :Bayesian (BIC)"
+  )
+  expect_equal(res$fit[["bic2"]] %>% round(., 3), 7528.739,
+    expected.label = "Loglikelihood and Information Criteria: Sample-size adjusted Bayesian (SABIC)"
+  )
   ## Root Mean Square Error of Approximation
-  expect_equal(res$fit[['rmsea']] %>% round(.,3), 0.092,
-               expected.label = "Root Mean Square Error of Approximation: RMSEA")
-  expect_equal(res$fit[['rmsea.ci.lower']] %>% round(.,3), 0.071,
-               expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - lower")
-  expect_equal(res$fit[['rmsea.ci.upper']] %>% round(.,3), 0.114,
-               expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - upper")
-  expect_equal(res$fit[['rmsea.pvalue']] %>% round(.,3), 0.001,
-               expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA <= 0.050")
-  expect_equal(res$fit[['rmsea.notclose.pvalue.scaled']] %>% round(.,3), 0.840,
-               expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA >= 0.080")
+  expect_equal(res$fit[["rmsea"]] %>% round(., 3), 0.092,
+    expected.label = "Root Mean Square Error of Approximation: RMSEA"
+  )
+  expect_equal(res$fit[["rmsea.ci.lower"]] %>% round(., 3), 0.071,
+    expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - lower"
+  )
+  expect_equal(res$fit[["rmsea.ci.upper"]] %>% round(., 3), 0.114,
+    expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - upper"
+  )
+  expect_equal(res$fit[["rmsea.pvalue"]] %>% round(., 3), 0.001,
+    expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA <= 0.050"
+  )
+  expect_equal(res$fit[["rmsea.notclose.pvalue.scaled"]] %>% round(., 3), 0.840,
+    expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA >= 0.080"
+  )
   ## Standardized Root Mean Square Residual
-  expect_equal(res$fit[['srmr']] %>% round(.,3), 0.065,
-               expected.label = "Standardized Root Mean Square Residual: SRMR")
+  expect_equal(res$fit[["srmr"]] %>% round(., 3), 0.065,
+    expected.label = "Standardized Root Mean Square Residual: SRMR"
+  )
   ## Parameter Estimates
-  
+
   ## Latent Variables
   expected_params <- data.frame(
     lhs = c(
@@ -217,10 +246,11 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
     pvalue = c(NA_real_, 0, 0, NA_real_, 0, 0, NA_real_, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
     stringsAsFactors = FALSE
   )
-  output_params <- res$pe %>% 
+  output_params <- res$pe %>%
     dplyr::mutate(across(where(is.numeric), \(x) round(x, digits = 3))) %>% # round to 3 digits
-    dplyr::select("lhs","op","rhs","est","se","z","pvalue")
+    dplyr::select("lhs", "op", "rhs", "est", "se", "z", "pvalue")
   expect_identical(output_params, expected_params,
-                   label = "Output Parameter Estimates",
-                   expected.label = "Expected Parameter Estimates")
+    label = "Output Parameter Estimates",
+    expected.label = "Expected Parameter Estimates"
+  )
 })
