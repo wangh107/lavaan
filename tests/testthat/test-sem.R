@@ -1,3 +1,4 @@
+# Basic functionality
 testthat::test_that("sem returns correct class when no errors present", {
   model <- '
   # latent variable definitions
@@ -21,6 +22,84 @@ testthat::test_that("sem returns correct class when no errors present", {
   expect_s4_class(fit, "lavaan")
 })
 
+# Arguments
+testthat::test_that("sem returns identical objects when arguments explicitly written and not written", {
+  model <- '
+  # latent variable definitions
+     ind60 =~ x1 + x2 + x3
+     dem60 =~ y1 + a*y2 + b*y3 + c*y4
+     dem65 =~ y5 + a*y6 + b*y7 + c*y8
+
+  # regressions
+    dem60 ~ ind60
+    dem65 ~ ind60 + dem60
+
+  # residual correlations
+    y1 ~~ y5
+    y2 ~~ y4 + y6
+    y3 ~~ y7
+    y4 ~~ y8
+    y6 ~~ y8
+'
+  
+  fit_default <- sem(model, data = PoliticalDemocracy)
+  fit_explicit <- sem(model, data = PoliticalDemocracy,
+                      int.ov.free = TRUE,
+                      int.lv.free = FALSE,
+                      auto.fix.first = TRUE,
+                      auto.fix.single = TRUE,
+                      auto.var = TRUE,
+                      auto.cov.lv.x = TRUE,
+                      auto.efa = TRUE,
+                      auto.th = TRUE,
+                      auto.delta = TRUE,
+                      auto.cov.y = TRUE)
+  summary_default <- summary(fit_default)
+  summary_explicit <- summary(fit_explicit)
+  # For simplicity sake, only compare summary of the output
+  # Require: summary work as intended
+  expect_identical(summary_default, summary_explicit)
+})
+
+testthat::test_that("sem returns same summary output as lavaan with same presets", {
+  model <- '
+  # latent variable definitions
+     ind60 =~ x1 + x2 + x3
+     dem60 =~ y1 + a*y2 + b*y3 + c*y4
+     dem65 =~ y5 + a*y6 + b*y7 + c*y8
+
+  # regressions
+    dem60 ~ ind60
+    dem65 ~ ind60 + dem60
+
+  # residual correlations
+    y1 ~~ y5
+    y2 ~~ y4 + y6
+    y3 ~~ y7
+    y4 ~~ y8
+    y6 ~~ y8
+'
+  
+  fit_sem <- sem(model, data = PoliticalDemocracy)
+  fit_lavaan <- lavaan(model, data = PoliticalDemocracy,
+                       int.ov.free = TRUE,
+                       int.lv.free = FALSE,
+                       auto.fix.first = TRUE,
+                       auto.fix.single = TRUE,
+                       auto.var = TRUE,
+                       auto.cov.lv.x = TRUE,
+                       auto.efa = TRUE,
+                       auto.th = TRUE,
+                       auto.delta = TRUE,
+                       auto.cov.y = TRUE)
+  summary_sem <- summary(fit_sem)
+  summary_lavaan <- summary(fit_lavaan)
+  # For simplicity sake, only compare summary of the output
+  # Require: summary work as intended
+  expect_identical(summary_sem, summary_lavaan)
+})
+
+# Reproducibility
 testthat::test_that("sem reproduce Political Democracy example", {
   set.seed(42)
   model <- '
@@ -95,81 +174,3 @@ testthat::test_that("sem reproduce Political Democracy example", {
                    label = "Output Parameter Estimates",
                    expected.label = "Expected Parameter Estimates")
 })
-
-testthat::test_that("sem returns identical objects when arguments explicitly written and not written", {
-
-  model <- '
-  # latent variable definitions
-     ind60 =~ x1 + x2 + x3
-     dem60 =~ y1 + a*y2 + b*y3 + c*y4
-     dem65 =~ y5 + a*y6 + b*y7 + c*y8
-
-  # regressions
-    dem60 ~ ind60
-    dem65 ~ ind60 + dem60
-
-  # residual correlations
-    y1 ~~ y5
-    y2 ~~ y4 + y6
-    y3 ~~ y7
-    y4 ~~ y8
-    y6 ~~ y8
-'
-
-  fit_default <- sem(model, data = PoliticalDemocracy)
-  fit_explicit <- sem(model, data = PoliticalDemocracy,
-                      int.ov.free = TRUE,
-                      int.lv.free = FALSE,
-                      auto.fix.first = TRUE,
-                      auto.fix.single = TRUE,
-                      auto.var = TRUE,
-                      auto.cov.lv.x = TRUE,
-                      auto.efa = TRUE,
-                      auto.th = TRUE,
-                      auto.delta = TRUE,
-                      auto.cov.y = TRUE)
-  summary_default <- summary(fit_default)
-  summary_explicit <- summary(fit_explicit)
-  # For simplicity sake, only compare summary of the output
-  # Require: summary work as intended
-  expect_identical(summary_default, summary_explicit)
-})
-
-testthat::test_that("sem returns same summary output as lavaan with same presets", {
-  model <- '
-  # latent variable definitions
-     ind60 =~ x1 + x2 + x3
-     dem60 =~ y1 + a*y2 + b*y3 + c*y4
-     dem65 =~ y5 + a*y6 + b*y7 + c*y8
-
-  # regressions
-    dem60 ~ ind60
-    dem65 ~ ind60 + dem60
-
-  # residual correlations
-    y1 ~~ y5
-    y2 ~~ y4 + y6
-    y3 ~~ y7
-    y4 ~~ y8
-    y6 ~~ y8
-'
-
-  fit_sem <- sem(model, data = PoliticalDemocracy)
-  fit_lavaan <- lavaan(model, data = PoliticalDemocracy,
-                      int.ov.free = TRUE,
-                      int.lv.free = FALSE,
-                      auto.fix.first = TRUE,
-                      auto.fix.single = TRUE,
-                      auto.var = TRUE,
-                      auto.cov.lv.x = TRUE,
-                      auto.efa = TRUE,
-                      auto.th = TRUE,
-                      auto.delta = TRUE,
-                      auto.cov.y = TRUE)
-  summary_sem <- summary(fit_sem)
-  summary_lavaan <- summary(fit_lavaan)
-  # For simplicity sake, only compare summary of the output
-  # Require: summary work as intended
-  expect_identical(summary_sem, summary_lavaan)
-})
-
