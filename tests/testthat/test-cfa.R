@@ -87,7 +87,20 @@ test_that("cfa() and lavaan() with the specified argument are equivalent", {
 
 # TODO: test relationship between std.lv and auto.fit.first
 
-# TODO: populate the expected value table
+## Bad arguments
+test_that("cfa() returns error for invalid model parameter", {
+  expect_error(cfa(model = "INVALID", data = HolzingerSwineford1939))
+})
+
+test_that("cfa() returns error for invalid data parameter", {
+  HS.model <- 'visual  =~ x1 + x2 + x3
+               textual =~ x4 + x5 + x6
+               speed   =~ x7 + x8 + x9'
+  random_data <- c(1,2,3,4,5)
+  expect_error(cfa(HS.model, data = random_data))
+})
+
+# Reproducibility test
 test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
   HS.model <- 'visual  =~ x1 + x2 + x3
                textual =~ x4 + x5 + x6
