@@ -139,9 +139,9 @@ testthat::test_that("Returns warning when not all models have meanstructure", {
               meanstructure = TRUE)
   fit0 <- cfa(HS.model, data = HolzingerSwineford1939,
               orthogonal = TRUE)
-  expect_warning(expect_error(lavTestLRT(fit1, fit0),
-                              label = "lavaan ERROR: some models (but not all) have scaled test statistics"),
-                              label = "not all models have a meanstructure")
+  expect_error(expect_warning(lavTestLRT(fit1, fit0),
+                              label = "not all models have a meanstructure"), 
+               label = "lavaan ERROR: some models (but not all) have scaled test statistics")
 
 })
 
@@ -174,6 +174,24 @@ testthat::test_that("Returns warning message for no robust test statistics", {
              label = paste("lavaan WARNING: method = satorrabentler2010",
                            "\n\t but no robust test statistics were used;",
                            "\n\t switching to the standard chi-square difference test"))
+})
+
+testthat::test_that("Returns warning when models have same degrees of freedom", {
+  # Data
+  HS9 <- HolzingerSwineford1939[,c("x1","x2","x3","x4","x5",
+                                   "x6","x7","x8","x9")]
+  HSbinary <- as.data.frame( lapply(HS9, cut, 2, labels=FALSE) )
+  
+  # Single group example with one latent factor
+  HS.model <- ' trait =~ x1 + x2 + x3 + x4 '
+  fit <- cfa(HS.model, data=HSbinary[,1:4], ordered=names(HSbinary[,1:4]),
+             estimator="PML")
+  fit1 <- cfa(HS.model, data=HSbinary[,1:4], ordered=names(HSbinary[,1:4]),
+              estimator="PML", orthogonal = T)
+  
+  expect_warning(lavTestLRT(fit, fit1, type = "cf"),
+                 label = "some models have the same degrees of freedom")
+  
 })
 
 # test for each type
@@ -219,7 +237,23 @@ testthat::test_that("Returns error message with invalid type", {
                label = "test type unknown")
 })
 
-## TODO: test for CF wasn't working in any way. find out why and write it
+# testthat::test_that("Returns dataframe when no errors present - cf", {
+#   # Data
+#   HS9 <- HolzingerSwineford1939[,c("x1","x2","x3","x4","x5",
+#                                    "x6","x7","x8","x9")]
+#   HSbinary <- as.data.frame( lapply(HS9, cut, 2, labels=FALSE) )
+#   
+#   # Single group example with one latent factor
+#   HS.model <- ' trait =~ x1 + x2 + x3 + x4 '
+#   fit <- cfa(HS.model, data=HSbinary[,1:4], ordered=names(HSbinary[,1:4]),
+#              estimator="PML")
+#   fit1 <- cfa(HS.model, data=HSbinary[,1:4], ordered=names(HSbinary[,1:4]),
+#              estimator="PML", orthogonal = T)
+#   
+#   res <- lavTestLRT(fit, fit1, type = "cf")
+#   
+#   expect_s3_class(res, "data.frame")
+# })
 
 # methods
 testthat::test_that("Returns error message when estimator missing - mean.var.adjusted.PLRT", {
