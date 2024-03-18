@@ -12,7 +12,7 @@ test_that("parameterEstimates return the correct class", {
   }
 })
 
-test_that("parameterEstimates returns dataframe with correct columns", {
+test_that("parameterEstimates with default inputs returns dataframe with correct columns", {
   HS.model <- 'visual  =~ x1 + x2 + x3 
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
