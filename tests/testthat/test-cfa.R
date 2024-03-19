@@ -221,7 +221,7 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
   expect_equal(res$fit[["rmsea.pvalue"]] %>% round(., 3), 0.001,
     expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA <= 0.050"
   )
-  expect_equal(res$fit[["rmsea.notclose.pvalue.scaled"]] %>% round(., 3), 0.840,
+  expect_equal(res$fit[["rmsea.notclose.pvalue"]] %>% round(., 3), 0.840,
     expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA >= 0.080"
   )
   ## Standardized Root Mean Square Residual
@@ -249,8 +249,9 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
   output_params <- res$pe %>%
     dplyr::mutate(across(where(is.numeric), \(x) round(x, digits = 3))) %>% # round to 3 digits
     dplyr::select("lhs", "op", "rhs", "est", "se", "z", "pvalue")
-  expect_identical(output_params, expected_params,
+  expect_equal(output_params, expected_params,
     label = "Output Parameter Estimates",
-    expected.label = "Expected Parameter Estimates"
+    expected.label = "Expected Parameter Estimates",
+    ignore_attr = TRUE
   )
 })

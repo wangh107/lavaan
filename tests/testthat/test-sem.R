@@ -125,13 +125,13 @@ testthat::test_that("sem reproduce Political Democracy example", {
   res <- summary(fit, standardized = TRUE)
   # Model Test User Model
   expect_equal(res[["test"]][["standard"]][["stat"]] %>% round(., 3), 38.125,
-    expect.label = "Model Test User Model: Test statistic"
+    expected.label = "Model Test User Model: Test statistic"
   )
   expect_equal(res[["test"]][["standard"]][["df"]], 35,
-    expect.label = "Model Test User Model: Degrees of freedom"
+    expected.label = "Model Test User Model: Degrees of freedom"
   )
   expect_equal(res[["test"]][["standard"]][["pvalue"]] %>% round(., 3), 0.329,
-    expect.label = "Model Test User Model: P-value (Chi-square)"
+    expected.label = "Model Test User Model: P-value (Chi-square)"
   )
   # Parameter Estimates
   expected_params <- data.frame(
