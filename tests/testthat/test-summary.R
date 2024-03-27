@@ -13,7 +13,7 @@ testthat::test_that("summary returns correct class - cfa", {
 
 })
 
-testthat::test_that("summary returns correct class - efa", {
+testthat::test_that("summary returns correct class - efa 1", {
 
   fit <- efa(data = HolzingerSwineford1939,
              ov.names = paste("x", 1:9, sep = ""),
@@ -23,6 +23,22 @@ testthat::test_that("summary returns correct class - efa", {
   res <- summary(fit, nd = 3L, cutoff = 0.2, dot.cutoff = 0.05)
 
   expect_true(inherits(res, "efaList.summary"))
+  expect_true(all(c("cutoff", "dot.cutoff") %in% names(attributes(res))))
+  expect_true(is.list(res))
+
+})
+
+testthat::test_that("summary returns correct class - efa 2", {
+
+  fit <- efa(data = HolzingerSwineford1939,
+             ov.names = paste("x", 1:9, sep = ""),
+             nfactors = 1,
+             rotation = "geomin",
+             rotation.args = list(geomin.epsilon = 0.01, rstarts = 1),
+             output = "efa")
+  res <- summary(fit$nf1)
+
+  expect_true(inherits(res, "list"))
   expect_true(all(c("cutoff", "dot.cutoff") %in% names(attributes(res))))
   expect_true(is.list(res))
 
