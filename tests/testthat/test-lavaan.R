@@ -1,23 +1,15 @@
 # Basic functionality
 test_that("lavaan() returns correct class", {
-  model <- 'visual  =~ x1 + x2 + x3
+  H.S.model <- 'visual  =~ x1 + x2 + x3
             textual =~ x4 + x5 + x6
             speed   =~ x7 + x8 + x9'
-  fit <- lavaan(model, data=HolzingerSwineford1939,
+  fit <- lavaan(model = H.S.model, data=HolzingerSwineford1939,
                 auto.var=TRUE, auto.fix.first=TRUE,
                 auto.cov.lv.x=TRUE)
   expect_s4_class(fit, "lavaan")
 })
 
 # TODO: HolzingerSwineford1939
-# test_that("lavaan() reproduce the Holzinger & Swineford (1939) example", {
-#   HS.model <- 'visual  =~ x1 + x2 + x3
-#                textual =~ x4 + x5 + x6
-#                speed   =~ x7 + x8 + x9'
-#   fit <- lavaan(HS.model, data=HolzingerSwineford1939,
-#                 auto.var=TRUE, auto.fix.first=TRUE,
-#                 auto.cov.lv.x=TRUE)
-# })
 
 # Input
 ## Formula
