@@ -29,6 +29,15 @@ test_that("lavaan() handles null formula", {
 })
 
 ## Data
+
+test_that("lavaan() takes in data.frame", {
+  expect_error(lavaan(model = "f =~ x1 + x2", data = 123))
+})
+
+test_that("lavaan() handles invalid ordered argument",{
+  expect_error(lavaan(model = "f =~ x1 + x2", data = data.frame(x1 = 1:10, x2 = 11:20), ordered = 123),
+               "lavaan ERROR: ordered argument must be a character vector")
+})
 # test_that("lavaan() handles data frames correctly", {
 ## TODO
 # })
