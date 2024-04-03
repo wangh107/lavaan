@@ -45,3 +45,27 @@ testthat::test_that("Returns empty list - test = none", {
   expect_equal(res[[1]], expected[[1]])
 })
 
+## PML
+# testthat::test_that("Returns output when estimator = PML", {
+#
+#   HS9 <- HolzingerSwineford1939[,c("x1","x2","x3","x4","x5",
+#                                    "x6","x7","x8","x9")]
+#   HSbinary <- as.data.frame( lapply(HS9, cut, 2, labels=FALSE) )
+#
+#   # Single group example with one latent factor
+#   HS.model <- ' trait =~ x1 + x2 + x3 + x4 '
+#   fit <- cfa(HS.model, data=HSbinary[,1:4], ordered=names(HSbinary[,1:4]),
+#              estimator="PML")
+#
+#   res <- lav_model_test(fit)
+#
+#   expect_true(is.list(res))
+#
+# })
+
+## two-level
+
+## Warning for test case not available for PML
+
+
+
