@@ -778,11 +778,13 @@ test_that("lavInspect with what = post.check returns a boolean or a warning", {
   # TODO: trigger warning
 })
 
-test_that("lavInspect with what = zero.cell.tables returns a list", {
-  fit <- HS_cfa()
-  res <- lavInspect(fit, what = "zero.cell.tables")
-  expect_type(res, "list")
-})
+
+# TODO: have category var
+# test_that("lavInspect with what = zero.cell.tables returns a list", {
+#   fit <- HS_cfa()
+#   res <- lavInspect(fit, what = "zero.cell.tables")
+#   expect_type(res, "list")
+# })
 
 test_that("lavInspect with what = version returns a string", {
   fit <- HS_cfa()
