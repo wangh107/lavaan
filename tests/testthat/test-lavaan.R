@@ -125,6 +125,62 @@ test_that("lavaan() handles invalid data types: function", {
                "data is a function; it should be a data.frame")
 })
 
+## ordered
+test_that("lavaan() only takes character vector as ordered", {
+  H.S.model <- 'visual  =~ x1 + x2 + x3
+            textual =~ x4 + x5 + x6
+            speed   =~ x7 + x8 + x9'
+  expect_error(lavaan(H.S.model, data = HolzingerSwineford1939, ordered = 123),
+               "ordered argument must be a character vector")
+})
+
+## group
+test_that("lavaan's group argument only takes column name in the dataframe", {
+  H.S.model <- 'visual  =~ x1 + x2 + x3
+            textual =~ x4 + x5 + x6
+            speed   =~ x7 + x8 + x9'
+  expect_error(lavaan(H.S.model, data = HolzingerSwineford1939, group = "not_exist"),
+               "grouping variable 'not_exist' not found")
+})
+
+## cluster
+test_that("lavaan's cluster argument only takes column name in the dataframe", {
+  cluster_model <- '
+    level: 1
+        fw =~ y1 + y2 + y3
+        fw ~ x1 + x2 + x3
+    level: 2
+        fb =~ y1 + y2 + y3
+        fb ~ w1 + w2'
+  expect_error(lavaan(cluster_model, data = Demo.twolevel, cluster = "not_exist"),
+               "cluster variable\\(s\\) 'not_exist' not found")
+})
+
+test_that("lavaan's cluster argument is required when model contains level", {
+  cluster_model <- '
+    level: 1
+        fw =~ y1 + y2 + y3
+        fw ~ x1 + x2 + x3
+    level: 2
+        fb =~ y1 + y2 + y3
+        fb ~ w1 + w2'
+  expect_error(lavaan(cluster_model, data = Demo.twolevel), # no cluster
+               "cluster argument is missing")
+})
+
+
+
+## lavoptions
+
+### h1 logical
+test_that("lavaan() only takes logical as h1 in lavoption", {
+  H.S.model <- 'visual  =~ x1 + x2 + x3
+            textual =~ x4 + x5 + x6
+            speed   =~ x7 + x8 + x9'
+  expect_error(lavaan(H.S.model, data = HolzingerSwineford1939, h1 = 123),
+               "argument `h1' must be logical \\(for now\\)")
+})
+
 # Pipeline integration
 test_that("summary() integrates with lavaan() output", {
   model <- 'visual  =~ x1 + x2 + x3
