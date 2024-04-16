@@ -134,12 +134,59 @@ test_that("lavaan() only takes character vector as ordered", {
                "ordered argument must be a character vector")
 })
 
+## ov.order
+test_that("lavaan correct handles ov.order argument", {
+  # Prepare sample data and model
+  data <- data.frame(x1 = rnorm(100), x2 = rnorm(100), x3 = rnorm(100))
+  model <- "f =~ x1 + x2 + x3"
+  
+  # Test default ov.order = "model"
+  expect_silent(lavaan(model, 
+                       data = data, 
+                       ov.order = "model", 
+                       auto.var=TRUE, 
+                       auto.fix.first=TRUE,
+                       auto.cov.lv.x=TRUE))
+  
+  # Test ov.order = "data" with data argument
+  expect_silent(lavaan(model, 
+                       data = data, 
+                       ov.order = "data",
+                       auto.var=TRUE, 
+                       auto.fix.first=TRUE,
+                       auto.cov.lv.x=TRUE))
+  
+  # Test ov.order = "data" with sample.cov argument
+  sample.cov <- cov(data)
+  expect_silent(lavaan(model, 
+                       sample.cov = sample.cov, 
+                       sample.nobs = nrow(data), 
+                       ov.order = "data",
+                       auto.var=TRUE, 
+                       auto.fix.first=TRUE,
+                       auto.cov.lv.x=TRUE))
+  
+  # Test ov.order = "data" with slotData argument
+  slotData <- lavaan(model, data = data)@Data
+  expect_silent(lavaan(model, data = data, ov.order = "data", slotData = slotData))
+  
+  # TODO: Test ov.order = "data" failure
+  
+  # Test invalid ov.order argument
+  expect_error(
+    lavaan(model, data = data, ov.order = "invalid"),
+    "lavaan ERROR: ov.order= argument should be \"model\" \\(default\\) or \"data\""
+  )
+})
+
 ## group
 test_that("lavaan's group argument only takes column name in the dataframe", {
   H.S.model <- 'visual  =~ x1 + x2 + x3
-            textual =~ x4 + x5 + x6
-            speed   =~ x7 + x8 + x9'
-  expect_error(lavaan(H.S.model, data = HolzingerSwineford1939, group = "not_exist"),
+                textual =~ x4 + x5 + x6
+                speed   =~ x7 + x8 + x9'
+  expect_error(lavaan(H.S.model, 
+                      data = HolzingerSwineford1939, 
+                      group = "not_exist", do.fit = FALSE),
                "grouping variable 'not_exist' not found")
 })
 
