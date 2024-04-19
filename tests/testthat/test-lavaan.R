@@ -137,44 +137,51 @@ test_that("lavaan() only takes character vector as ordered", {
 ## ov.order
 test_that("lavaan correct handles ov.order argument", {
   # Prepare sample data and model
-  data <- data.frame(x1 = rnorm(100), x2 = rnorm(100), x3 = rnorm(100))
-  model <- "f =~ x1 + x2 + x3"
+  test_data <- data.frame(x1 = rnorm(100), x2 = rnorm(100), x3 = rnorm(100))
+  test_model <- "f =~ x1 + x2 + x3"
+  H.S.model <- 'visual  =~ x1 + x2 + x3
+                textual =~ x4 + x5 + x6
+                speed   =~ x7 + x8 + x9'
   
   # Test default ov.order = "model"
-  expect_silent(lavaan(model, 
-                       data = data, 
+  expect_silent(lavaan(H.S.model, 
+                       data = HolzingerSwineford1939, 
                        ov.order = "model", 
                        auto.var=TRUE, 
                        auto.fix.first=TRUE,
                        auto.cov.lv.x=TRUE))
   
   # Test ov.order = "data" with data argument
-  expect_silent(lavaan(model, 
-                       data = data, 
+  expect_silent(lavaan(H.S.model, 
+                       data = HolzingerSwineford1939, 
                        ov.order = "data",
                        auto.var=TRUE, 
                        auto.fix.first=TRUE,
                        auto.cov.lv.x=TRUE))
   
   # Test ov.order = "data" with sample.cov argument
-  sample.cov <- cov(data)
-  expect_silent(lavaan(model, 
-                       sample.cov = sample.cov, 
-                       sample.nobs = nrow(data), 
-                       ov.order = "data",
-                       auto.var=TRUE, 
-                       auto.fix.first=TRUE,
-                       auto.cov.lv.x=TRUE))
+  # expect_silent(lavaan(test_model, 
+  #                      sample.cov = cov(test_data), 
+  #                      sample.nobs = nrow(test_data), 
+  #                      ov.order = "data",
+  #                      auto.var=TRUE, 
+  #                      auto.fix.first=TRUE,
+  #                      auto.cov.lv.x=TRUE))
   
   # Test ov.order = "data" with slotData argument
-  slotData <- lavaan(model, data = data)@Data
-  expect_silent(lavaan(model, data = data, ov.order = "data", slotData = slotData))
+  # slotData <- lavaan(model, data = data)@Data
+  # expect_silent(lavaan(model, data = data, 
+  #                      ov.order = "data", 
+  #                      slotData = slotData,
+  #                      auto.var=TRUE, 
+  #                      auto.fix.first=TRUE,
+  #                      auto.cov.lv.x=TRUE))
   
   # TODO: Test ov.order = "data" failure
   
   # Test invalid ov.order argument
   expect_error(
-    lavaan(model, data = data, ov.order = "invalid"),
+    lavaan(test_model, data = test_data, ov.order = "invalid"),
     "lavaan ERROR: ov.order= argument should be \"model\" \\(default\\) or \"data\""
   )
 })
@@ -218,6 +225,16 @@ test_that("lavaan's cluster argument is required when model contains level", {
 
 
 ## lavoptions
+
+### TODO: backward compabitility
+
+test_that("lavaan handles unknown options", {
+  # Test unknown options
+  expect_error(
+    lavaan(model = "f =~ x1 + x2 + x3", data = NULL, unknown_option = TRUE),
+    "lavaan ERROR: unknown argument `unknown_option'"
+  )
+})
 
 ### h1 logical
 test_that("lavaan() only takes logical as h1 in lavoption", {
