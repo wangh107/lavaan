@@ -36,8 +36,8 @@ test_that("cfa() function with and without explicit arguments (i.e. default argu
     auto.cov.y = TRUE
   )
   # Compare captured calls
-  call_default <- attr(fit_default, "call") %>% as.list()
-  call_explicit <- attr(fit_explicit, "call") %>% as.list()
+  call_default <- as.list(attr(fit_default, "call"))
+  call_explicit <-  as.list(attr(fit_explicit, "call"))
 
   for (arg in names(call_default)) {
     if (arg %in% c("", "model", "data")) next
@@ -76,8 +76,8 @@ test_that("cfa() and lavaan() with the specified (auto) argument are equivalent"
     auto.cov.y = TRUE
   )
   # Compare captured calls
-  call_cfa <- attr(fit_cfa, "call") %>% as.list()
-  call_lavaan <- attr(fit_lavaan, "call") %>% as.list()
+  call_cfa <- as.list(attr(fit_cfa, "call"))
+  call_lavaan <- as.list(attr(fit_lavaan, "call"))
   for (arg in names(call_cfa)) {
     if (arg %in% c("", "model", "data", "model.type")) next
     expect_identical(call_cfa[[arg]], call_lavaan[[arg]],
@@ -164,68 +164,68 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
   expect_equal(res$test$standard$refdistr, "chisq",
     info = "standard test is Chi Square"
   )
-  expect_equal(res$test$standard$stat %>% round(., 3), 85.306,
+  expect_equal(round(res$test$standard$stat, 3), 85.306,
     expected.label = "Model Test User Model: Test statistic"
   )
   expect_equal(res$test$standard$df, 24,
     expected.label = "Model Test User Model: Degrees of freedom"
   )
-  expect_equal(res$test$standard$pvalue %>% round(., 3), 0.000,
+  expect_equal(round(res$test$standard$pvalue, 3), 0.000,
     expected.label = "Model Test User Model: P-value (Chi-square)"
   )
   ## Model Test Baseline Model
   # Requires summary - fitmeasures
-  expect_equal(res$fit[["baseline.chisq"]] %>% round(., 3), 918.852,
+  expect_equal(round(res$fit[["baseline.chisq"]], 3), 918.852,
     expected.label = "Model Test Baseline Model: Test statistic"
   )
   expect_equal(res$fit[["baseline.df"]], 36,
     expected.label = "Model Test Baseline Model: Degrees of freedom"
   )
-  expect_equal(res$fit[["baseline.pvalue"]] %>% round(., 3), 0.000,
+  expect_equal(round(res$fit[["baseline.pvalue"]], 3), 0.000,
     expected.label = "Model Test Baseline Model: P-value (Chi-square)"
   )
   ## User Model vs Baseline Model
-  expect_equal(res$fit[["cfi"]] %>% round(., 3), 0.931,
+  expect_equal(round(res$fit[["cfi"]], 3), 0.931,
     expected.label = "Comparative Fit Index (CFI)"
   )
-  expect_equal(res$fit[["tli"]] %>% round(., 3), 0.896,
+  expect_equal(round(res$fit[["tli"]], 3), 0.896,
     expected.label = "Tucker-Lewis Index (TLI)"
   )
   ## Loglikelihood and Information Criteria: fit@loglik
-  expect_equal(res$fit[["logl"]] %>% round(., 3), -3737.745,
+  expect_equal(round(res$fit[["logl"]], 3), -3737.745,
     expected.label = "Loglikelihood and Information Criteria: Loglikelihood user model (H0)"
   )
-  expect_equal(res$fit[["unrestricted.logl"]] %>% round(., 3), -3695.092,
+  expect_equal(round(res$fit[["unrestricted.logl"]], 3), -3695.092,
     expected.label = "Loglikelihood and Information Criteria: Loglikelihood unrestricted model (H1)"
   )
   ### Loglikelihood unrestricted model (H1)      -3695.092
-  expect_equal(res$fit[["aic"]] %>% round(., 3), 7517.490,
+  expect_equal(round(res$fit[["aic"]], 3), 7517.490,
     expected.label = "Loglikelihood and Information Criteria: Akaike (AIC)"
   )
-  expect_equal(res$fit[["bic"]] %>% round(., 3), 7595.339,
+  expect_equal(round(res$fit[["bic"]], 3), 7595.339,
     expected.label = "Loglikelihood and Information Criteria :Bayesian (BIC)"
   )
-  expect_equal(res$fit[["bic2"]] %>% round(., 3), 7528.739,
+  expect_equal(round(res$fit[["bic2"]], 3), 7528.739,
     expected.label = "Loglikelihood and Information Criteria: Sample-size adjusted Bayesian (SABIC)"
   )
   ## Root Mean Square Error of Approximation
-  expect_equal(res$fit[["rmsea"]] %>% round(., 3), 0.092,
+  expect_equal(round(res$fit[["rmsea"]], 3), 0.092,
     expected.label = "Root Mean Square Error of Approximation: RMSEA"
   )
-  expect_equal(res$fit[["rmsea.ci.lower"]] %>% round(., 3), 0.071,
+  expect_equal(round(res$fit[["rmsea.ci.lower"]], 3), 0.071,
     expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - lower"
   )
-  expect_equal(res$fit[["rmsea.ci.upper"]] %>% round(., 3), 0.114,
+  expect_equal(round(res$fit[["rmsea.ci.upper"]], 3), 0.114,
     expected.label = "Root Mean Square Error of Approximation: 90 Percent confidence interval - upper"
   )
-  expect_equal(res$fit[["rmsea.pvalue"]] %>% round(., 3), 0.001,
+  expect_equal(round(res$fit[["rmsea.pvalue"]], 3), 0.001,
     expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA <= 0.050"
   )
-  expect_equal(res$fit[["rmsea.notclose.pvalue"]] %>% round(., 3), 0.840,
+  expect_equal(round(res$fit[["rmsea.notclose.pvalue"]], 3), 0.840,
     expected.label = "Root Mean Square Error of Approximation: P-value H_0: RMSEA >= 0.080"
   )
   ## Standardized Root Mean Square Residual
-  expect_equal(res$fit[["srmr"]] %>% round(., 3), 0.065,
+  expect_equal(round(res$fit[["srmr"]], 3), 0.065,
     expected.label = "Standardized Root Mean Square Residual: SRMR"
   )
   ## Parameter Estimates
@@ -246,9 +246,12 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
     pvalue = c(NA_real_, 0, 0, NA_real_, 0, 0, NA_real_, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
     stringsAsFactors = FALSE
   )
-  output_params <- res$pe %>%
-    dplyr::mutate(across(where(is.numeric), \(x) round(x, digits = 3))) %>% # round to 3 digits
-    dplyr::select("lhs", "op", "rhs", "est", "se", "z", "pvalue")
+  
+  x <- as.data.frame(res$pe)
+  
+  output_params <- data.frame(lapply(x, function(y) if(is.numeric(y)) round(y, 3) else y))
+  
+  output_params <- output_params[, c("lhs", "op", "rhs", "est", "se", "z", "pvalue")]
   expect_equal(output_params, expected_params,
     label = "Output Parameter Estimates",
     expected.label = "Expected Parameter Estimates",
