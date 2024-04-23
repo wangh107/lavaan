@@ -202,8 +202,11 @@ test_that("parameterEstimate reproduce the result of HolzingerSwineford1939", {
                  1.094, 1.199, 0.553, 0.552, 0.373, 0.270),
     stringsAsFactors = FALSE
   )
-  output_df <- res %>% as.data.frame() %>%
-    dplyr::mutate(across(where(is.numeric), \(x) round(x, digits = 3)))
+  
+  x <- as.data.frame(res)
+  
+  output_df <- data.frame(lapply(x, function(y) if(is.numeric(y)) round(y, 3) else y))
+
   expect_equal(output_df, ref_df, ignore_attr = TRUE,
                label = "Actual parameter estimate dataframe",
                expected.label = "Expected parameter estimate dataframe")
