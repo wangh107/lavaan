@@ -1,49 +1,13 @@
 # Basic functionality
 testthat::test_that("sem returns correct class when no errors present", {
-  model <- "
-  # latent variable definitions
-     ind60 =~ x1 + x2 + x3
-     dem60 =~ y1 + a*y2 + b*y3 + c*y4
-     dem65 =~ y5 + a*y6 + b*y7 + c*y8
-
-  # regressions
-    dem60 ~ ind60
-    dem65 ~ ind60 + dem60
-
-  # residual correlations
-    y1 ~~ y5
-    y2 ~~ y4 + y6
-    y3 ~~ y7
-    y4 ~~ y8
-    y6 ~~ y8
-"
-
-  fit <- sem(model, data = PoliticalDemocracy)
+  fit <- sem(MODEL_SEM_PD, data = PoliticalDemocracy)
   expect_s4_class(fit, "lavaan")
 })
 
 # Arguments
 testthat::test_that("sem returns identical objects when arguments explicitly written and not written", {
-  model <- "
-  # latent variable definitions
-     ind60 =~ x1 + x2 + x3
-     dem60 =~ y1 + a*y2 + b*y3 + c*y4
-     dem65 =~ y5 + a*y6 + b*y7 + c*y8
-
-  # regressions
-    dem60 ~ ind60
-    dem65 ~ ind60 + dem60
-
-  # residual correlations
-    y1 ~~ y5
-    y2 ~~ y4 + y6
-    y3 ~~ y7
-    y4 ~~ y8
-    y6 ~~ y8
-"
-
-  fit_default <- sem(model, data = PoliticalDemocracy)
-  fit_explicit <- sem(model,
+  fit_default <- sem(MODEL_SEM_PD, data = PoliticalDemocracy)
+  fit_explicit <- sem(MODEL_SEM_PD,
     data = PoliticalDemocracy,
     int.ov.free = TRUE,
     int.lv.free = FALSE,
@@ -64,26 +28,8 @@ testthat::test_that("sem returns identical objects when arguments explicitly wri
 })
 
 testthat::test_that("sem returns same summary output as lavaan with same presets", {
-  model <- "
-  # latent variable definitions
-     ind60 =~ x1 + x2 + x3
-     dem60 =~ y1 + a*y2 + b*y3 + c*y4
-     dem65 =~ y5 + a*y6 + b*y7 + c*y8
-
-  # regressions
-    dem60 ~ ind60
-    dem65 ~ ind60 + dem60
-
-  # residual correlations
-    y1 ~~ y5
-    y2 ~~ y4 + y6
-    y3 ~~ y7
-    y4 ~~ y8
-    y6 ~~ y8
-"
-
-  fit_sem <- sem(model, data = PoliticalDemocracy)
-  fit_lavaan <- lavaan(model,
+  fit_sem <- sem(MODEL_SEM_PD, data = PoliticalDemocracy)
+  fit_lavaan <- lavaan(MODEL_SEM_PD,
     data = PoliticalDemocracy,
     int.ov.free = TRUE,
     int.lv.free = FALSE,
@@ -121,8 +67,7 @@ testthat::test_that("sem reproduce Political Democracy example", {
     y4 ~~ y8
     y6 ~~ y8
 "
-  fit <- sem(model, data = PoliticalDemocracy)
-  res <- summary(fit, standardized = TRUE)
+  fit <- sem(FIT_SEM_PD, standardized = TRUE)
   # Model Test User Model
   expect_equal( round(res[["test"]][["standard"]][["stat"]], 3), 38.125,
                 expected.label = "Model Test User Model: Test statistic"

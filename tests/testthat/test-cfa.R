@@ -1,28 +1,19 @@
 # Basic functionality
 test_that("cfa() returns the correct class", {
-  model <- "visual  =~ x1 + x2 + x3
-            textual =~ x4 + x5 + x6
-            speed   =~ x7 + x8 + x9"
-  fit <- cfa(model, data = HolzingerSwineford1939)
+  fit <- cfa(MODEL_CFA_HS, data = HolzingerSwineford1939)
   expect_s4_class(fit, "lavaan")
 })
 
 test_that("cfa() records the correct call", {
-  model <- "visual  =~ x1 + x2 + x3
-            textual =~ x4 + x5 + x6
-            speed   =~ x7 + x8 + x9"
-  fit <- cfa(model, data = HolzingerSwineford1939)
+  fit <- cfa(MODEL_CFA_HS, data = HolzingerSwineford1939)
   expect_equal(fit@call$model.type, "cfa")
 })
 
 # Arguments
 test_that("cfa() function with and without explicit arguments (i.e. default arguments) are equivalent", {
   set.seed(42)
-  HS.model <- "visual  =~ x1 + x2 + x3
-               textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9"
-  fit_default <- cfa(HS.model, data = HolzingerSwineford1939)
-  fit_explicit <- cfa(HS.model,
+  fit_default <- cfa(MODEL_CFA_HS, data = HolzingerSwineford1939)
+  fit_explicit <- cfa(MODEL_CFA_HS,
     data = HolzingerSwineford1939,
     int.ov.free = TRUE,
     int.lv.free = FALSE,
@@ -57,12 +48,9 @@ test_that("cfa() function with and without explicit arguments (i.e. default argu
 
 test_that("cfa() and lavaan() with the specified (auto) argument are equivalent", {
   set.seed(42)
-  HS.model <- "visual  =~ x1 + x2 + x3
-               textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9"
-  fit_cfa <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit_cfa <- cfa(MODEL_CFA_HS, data = HolzingerSwineford1939)
   # copy from documentation
-  fit_lavaan <- lavaan(HS.model,
+  fit_lavaan <- lavaan(MODEL_CFA_HS,
     data = HolzingerSwineford1939,
     int.ov.free = TRUE,
     int.lv.free = FALSE,
@@ -142,21 +130,15 @@ test_that("cfa() returns error for invalid model parameter", {
 })
 
 test_that("cfa() returns error for invalid data parameter", {
-  HS.model <- "visual  =~ x1 + x2 + x3
-               textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9"
   random_data <- c(1, 2, 3, 4, 5)
-  expect_error(cfa(HS.model, data = random_data))
+  expect_error(cfa(MODEL_CFA_HS, data = random_data))
 })
 
 # Reproducibility test
 ## See https://lavaan.ugent.be/tutorial/cfa.html
 ## Also page 14-15 of lavaan: An R Package for Structural Equation Modeling
 test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
-  HS.model <- "visual  =~ x1 + x2 + x3
-               textual =~ x4 + x5 + x6
-               speed   =~ x7 + x8 + x9"
-  fit <- cfa(HS.model, data = HolzingerSwineford1939)
+  fit <- cfa(MODEL_CFA_HS, data = HolzingerSwineford1939)
   res <- summary(fit, fit.measures = TRUE)
   # Enumerate fields
   ## Header
