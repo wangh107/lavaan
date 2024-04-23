@@ -1,12 +1,5 @@
 testthat::test_that("Function returns correct class", {
-
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model, data = HolzingerSwineford1939)
-
-  res <- lav_object_summary(fit)
+  res <- lav_object_summary(FIT_CFA_HS)
 
   expect_true(inherits(res, "lavaan.summary"))
   expect_true(is.list(res))
@@ -52,12 +45,6 @@ testthat::test_that("Function is indeed a wrapper for lav_efa_summary", {
 
 testthat::test_that("Function is indeed a wrapper for modificationIndices", {
 
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model, data = HolzingerSwineford1939)
-
   mock_modificationIndices <- function(object, ...) {
     expect_s4_class(object, "lavaan")
     return(TRUE) # Simulate successful execution
@@ -67,17 +54,11 @@ testthat::test_that("Function is indeed a wrapper for modificationIndices", {
     `modificationIndices` = mock_modificationIndices
   )
 
-  expect_true(lav_object_summary(fit, modindices = T)$mi)
+  expect_true(lav_object_summary(FIT_CFA_HS, modindices = T)$mi)
 
 })
 
 testthat::test_that("Function is indeed a wrapper for lav_fit_measures", {
-
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model, data = HolzingerSwineford1939)
 
   mock_lav_fit_measures <- function(object, ...) {
     expect_s4_class(object, "lavaan")
@@ -87,19 +68,13 @@ testthat::test_that("Function is indeed a wrapper for lav_fit_measures", {
   local_mocked_bindings(
     `lav_fit_measures` = mock_lav_fit_measures
   )
-  expect_true(summary(fit, fit.measures = T)$fit)
+  expect_true(summary(FIT_CFA_HS, fit.measures = T)$fit)
 
 })
 
 testthat::test_that("Returns output if both standardized and std.nox = T", {
 
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model, data = HolzingerSwineford1939)
-
-  res <- lav_object_summary(fit, standardized = T, std.nox = T)
+  res <- lav_object_summary(FIT_CFA_HS, standardized = T, std.nox = T)
 
   expect_true(inherits(res, "lavaan.summary"))
   expect_true(is.list(res))
