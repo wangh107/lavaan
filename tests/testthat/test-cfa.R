@@ -138,7 +138,10 @@ test_that("cfa() returns error for invalid data parameter", {
 ## See https://lavaan.ugent.be/tutorial/cfa.html
 ## Also page 14-15 of lavaan: An R Package for Structural Equation Modeling
 test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
-  fit <- cfa(MODEL_CFA_HS, data = HolzingerSwineford1939)
+  H.S.model <- "visual  =~ x1 + x2 + x3
+                textual =~ x4 + x5 + x6
+                speed   =~ x7 + x8 + x9"
+  fit <- cfa(H.S.model, data = HolzingerSwineford1939)
   res <- summary(fit, fit.measures = TRUE)
   # Enumerate fields
   ## Header

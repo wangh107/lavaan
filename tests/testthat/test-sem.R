@@ -67,7 +67,8 @@ testthat::test_that("sem reproduce Political Democracy example", {
     y4 ~~ y8
     y6 ~~ y8
 "
-  fit <- sem(FIT_SEM_PD, standardized = TRUE)
+  fit <- sem(model, data = PoliticalDemocracy)
+  res <- summary(fit, standardized = TRUE)
   # Model Test User Model
   expect_equal( round(res[["test"]][["standard"]][["stat"]], 3), 38.125,
                 expected.label = "Model Test User Model: Test statistic"
