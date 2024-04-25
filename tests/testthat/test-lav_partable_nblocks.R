@@ -16,17 +16,8 @@ test_that("lav_partable_nblocks returns an integer", {
 })
 
 test_that("lav_partable_nblocks returns number of blocks properly", {
-
-  model_twolevels <- '
-    level: 1
-        fw =~ y1 + y2 + y3
-        fw ~ x1 + x2 + x3
-    level: 2
-        fb =~ y1 + y2 + y3
-        fb ~ w1 + w2
-  '
-  fit <- sem(model = model_twolevels, data = Demo.twolevel, cluster = "cluster")
-  res <- lav_partable_nblocks(parTable(fit))
+  # twolevels SEM model contains two levels in model definition
+  res <- lav_partable_nblocks(parTable(FIT_SEM_TWOLEVELS))
 
   expect_equal(res, 2)
 })
