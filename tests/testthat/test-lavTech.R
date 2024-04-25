@@ -1,11 +1,7 @@
 test_that("lavTech is lavInspect with specified default arguments", {
-  H.S.model <- "visual  =~ x1 + x2 + x3
-                textual =~ x4 + x5 + x6
-                speed   =~ x7 + x8 + x9"
-  fit <- cfa(H.S.model, data = HolzingerSwineford1939)
-  res_tech <- lavTech(fit, "free")
+  res_tech <- lavTech(FIT_CFA_HS, "free")
   # require lavInspect to work properly
-  res_inspect <- lavInspect(fit, "free", 
+  res_inspect <- lavInspect(FIT_CFA_HS, "free", 
                             add.labels = FALSE, 
                             add.class = FALSE,
                             list.by.group = FALSE,
@@ -14,14 +10,10 @@ test_that("lavTech is lavInspect with specified default arguments", {
 })
 
 test_that("lavTech passes correct argument to lavInspect", {
-  H.S.model <- "visual  =~ x1 + x2 + x3
-                textual =~ x4 + x5 + x6
-                speed   =~ x7 + x8 + x9"
-  fit <- cfa(H.S.model, data = HolzingerSwineford1939)
   # what argument
-  res_tech <- lavTech(fit, what = "se")
+  res_tech <- lavTech(FIT_CFA_HS, what = "se")
   # require lavInspect to work properly
-  res_inspect <- lavInspect(fit, "se",
+  res_inspect <- lavInspect(FIT_CFA_HS, "se",
                             add.labels = FALSE, 
                             add.class = FALSE,
                             list.by.group = FALSE,
@@ -29,10 +21,10 @@ test_that("lavTech passes correct argument to lavInspect", {
   expect_equal(res_tech, res_inspect, label = "lavTech", expected.label = "underlying lavInspect")
   
   # add.labels argument
-  res_tech <- lavTech(fit, what = "free",
+  res_tech <- lavTech(FIT_CFA_HS, what = "free",
                       add.labels = TRUE) # flip it
   # require lavInspect to work properly
-  res_inspect <- lavInspect(fit, "free",
+  res_inspect <- lavInspect(FIT_CFA_HS, "free",
                             add.labels = TRUE, 
                             add.class = FALSE,
                             list.by.group = FALSE,

@@ -3,20 +3,17 @@ test_that("lav_partable_nlevels only takes partable", {
   expect_error(lav_partable_nlevels(123))
   expect_error(lav_partable_nlevels(TRUE))
   
-  fit <- HS_cfa()
-  expect_silent(lav_partable_nlevels(parTable(fit)))
-  expect_silent(lav_partable_nlevels(fit@ParTable))
+  expect_silent(lav_partable_nlevels(parTable(FIT_CFA_HS)))
+  expect_silent(lav_partable_nlevels(FIT_CFA_HS@ParTable))
 })
 
 test_that("lav_partable_nlevels returns an integer", {
-  fit <- HS_cfa()
-  res <- lav_partable_nlevels(parTable(fit))
+  res <- lav_partable_nlevels(parTable(FIT_CFA_HS))
   expect_type(res, "integer")
 })
 
 test_that("lav_partable_nlevels correctly returns the number of levels", {
-  fit1 <- HS_cfa()
-  expect_equal(lav_partable_nlevels(parTable(fit1)), 1)
+  expect_equal(lav_partable_nlevels(parTable(FIT_CFA_HS)), 1)
   
   model_twolevels <- '
     level: 1

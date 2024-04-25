@@ -1,24 +1,11 @@
 testthat::test_that("Returns data frame when no errors present", {
-
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model,
-             data = HolzingerSwineford1939)
-  res <- modindices(fit, sort = TRUE, maximum.number = 5)
+  res <- modindices(FIT_CFA_HS, sort = TRUE, maximum.number = 5)
 
   expect_s3_class(res, "data.frame")
 })
 
 testthat::test_that("Returns are consistent every time", {
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  
-  fit <- cfa(HS.model,
-             data = HolzingerSwineford1939)
-  res <- modindices(fit, sort = TRUE, maximum.number = 5)
+  res <- modindices(FIT_CFA_HS, sort = TRUE, maximum.number = 5)
   res_check <- data.frame(lhs = c("visual", "x7", "visual", "x8", "textual"),
                           op = c("=~", "~~", "=~", "~~", "=~"),
                           rhs = c("x9", "x8", "x7", "x9", "x3"),
@@ -46,12 +33,7 @@ testthat::test_that("Returns error if model did not converge", {
 
 #pml
 testthat::test_that("Returns error if estimator = 'PML'", {
-  data = HolzingerSwineford1939
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model,
+  fit <- cfa(MODEL_CFA_HS,
              data = HolzingerSwineford1939,
              estimator = 'PML')
   expect_error(modindices(fit, sort = TRUE, maximum.number = 5),
@@ -79,14 +61,7 @@ testthat::test_that("Returns error if contains equality constraints", {
 
 #sanity check if statement
 testthat::test_that("Check 'Power' option working", {
-
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model,
-             data = HolzingerSwineford1939)
-  res <- modindices(fit, sort = TRUE, maximum.number = 5,
+  res <- modindices(FIT_CFA_HS, sort = TRUE, maximum.number = 5,
                     power = TRUE)
 
   expect_s3_class(res, "data.frame")
@@ -94,14 +69,7 @@ testthat::test_that("Check 'Power' option working", {
 
 #standardized
 testthat::test_that("Check 'Standardized' option working", {
-
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model,
-             data = HolzingerSwineford1939)
-  res <- modindices(fit, sort = TRUE, maximum.number = 5,
+  res <- modindices(FIT_CFA_HS, sort = TRUE, maximum.number = 5,
                     standardized = TRUE)
 
   expect_s3_class(res, "data.frame")

@@ -1,47 +1,27 @@
 # Basic functionality
 ## Note: integrate with fit functions
 test_that("parameterEstimates return the correct class", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  if (inherits(fit, "lavaan")){ # Sanity check: the input needs to be lavaan class
-    res <- parameterEstimates(fit)
-    expect_s3_class(res, "lavaan.data.frame")
-    expect_s3_class(res, "data.frame")
-  }
+  res <- parameterEstimates(FIT_CFA_HS)
+  expect_s3_class(res, "lavaan.data.frame")
+  expect_s3_class(res, "data.frame")
 })
 
 test_that("parameterEstimates with default inputs returns dataframe with correct columns", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  if (inherits(fit, "lavaan")){ # Sanity check: the input needs to be lavaan class
-    res <- parameterEstimates(fit)
-    expected_columns <- c("lhs", "op", "rhs", "est", "se", "z", "pvalue", "ci.lower", "ci.upper")
-    expect_named(res, expected_columns, ignore.order = TRUE)
-  }
+  res <- parameterEstimates(FIT_CFA_HS)
+  expected_columns <- c("lhs", "op", "rhs", "est", "se", "z", "pvalue", "ci.lower", "ci.upper")
+  expect_named(res, expected_columns, ignore.order = TRUE)
 })
 
 test_that("parameterEstimates and ParameterEstimates are simply alias", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  res_1 <- parameterEstimates(fit)
-  res_2 <- parameterestimates(fit)
+  res_1 <- parameterEstimates(FIT_CFA_HS)
+  res_2 <- parameterestimates(FIT_CFA_HS)
   expect_identical(res_1, res_2)
 })
 
 # Argument specification
 test_that("parameterEstimates handles 'se' argument correctly", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe_se <- parameterEstimates(fit, se = TRUE)
-  pe_nose <- parameterEstimates(fit, se = FALSE)
+  pe_se <- parameterEstimates(FIT_CFA_HS, se = TRUE)
+  pe_nose <- parameterEstimates(FIT_CFA_HS, se = FALSE)
   expect_true("se" %in% names(pe_se))
   expect_false("se" %in% names(pe_nose))
   # if FALSE, this implies zstat and pvalue and ci are also FALSE.
@@ -52,86 +32,54 @@ test_that("parameterEstimates handles 'se' argument correctly", {
 })
 
 test_that("parameterEstimates handles 'zstat' argument correctly", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe_zstat <- parameterEstimates(fit, zstat = TRUE)
-  pe_nozstat <- parameterEstimates(fit, zstat = FALSE)
+  pe_zstat <- parameterEstimates(FIT_CFA_HS, zstat = TRUE)
+  pe_nozstat <- parameterEstimates(FIT_CFA_HS, zstat = FALSE)
   expect_true("z" %in% names(pe_zstat))
   expect_false("z" %in% names(pe_nozstat))
 })
 
 test_that("parameterEstimates handles 'pvalue' argument correctly", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe_pvalue <- parameterEstimates(fit, pvalue = TRUE)
-  pe_nopvalue <- parameterEstimates(fit, pvalue = FALSE)
+  pe_pvalue <- parameterEstimates(FIT_CFA_HS, pvalue = TRUE)
+  pe_nopvalue <- parameterEstimates(FIT_CFA_HS, pvalue = FALSE)
   expect_true("pvalue" %in% names(pe_pvalue))
   expect_false("pvalue" %in% names(pe_nopvalue))
 })
 
 test_that("parameterEstimates handles 'standardized' argument correctly", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe_standardized <- parameterEstimates(fit, standardized = TRUE)
-  pe_nonstandardized <- parameterEstimates(fit, standardized = FALSE)
+  pe_standardized <- parameterEstimates(FIT_CFA_HS, standardized = TRUE)
+  pe_nonstandardized <- parameterEstimates(FIT_CFA_HS, standardized = FALSE)
   expect_true("std.all" %in% names(pe_standardized))
   expect_false("std.all" %in% names(pe_nonstandardized))
 })
 
 test_that("parameterEstimates handles 'ci' argument correctly", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe_ci <- parameterEstimates(fit, ci = TRUE)
-  pe_noci <- parameterEstimates(fit, ci = FALSE)
+  pe_ci <- parameterEstimates(FIT_CFA_HS, ci = TRUE)
+  pe_noci <- parameterEstimates(FIT_CFA_HS, ci = FALSE)
   expect_true("ci.lower" %in% names(pe_ci) & "ci.upper" %in% names(pe_ci))
   expect_false("ci.lower" %in% names(pe_noci) | "ci.upper" %in% names(pe_noci))
 })
 
 ## TODO: remove*
 test_that("parameterEstimate handles remove.eq argument correctly",{
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe <- parameterEstimates(fit, remove.eq = TRUE)
+  pe <- parameterEstimates(FIT_CFA_HS, remove.eq = TRUE)
   expect_false(any(pe$op == "=="), 
                label = "== rows exist in the result when remove.eq is TRUE")
 })
 
 test_that("parameterEstimate handles remove.system.eq argument correctly",{
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe <- parameterEstimates(fit, remove.system.eq = TRUE)
+  pe <- parameterEstimates(FIT_CFA_HS, remove.system.eq = TRUE)
   expect_false(any(pe$op == "=="), 
                label = "== rows exist in the result when remove.system.eq is TRUE")
 })
 
 test_that("parameterEstimate handles remove.ineq argument correctly",{
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe <- parameterEstimates(fit, remove.ineq = TRUE)
+  pe <- parameterEstimates(FIT_CFA_HS, remove.ineq = TRUE)
   expect_false(any(pe$op %in% c("<", ">")), 
                label = "inequality rows exist in the result when remove.ineq is TRUE")
 })
 
 test_that("parameterEstimate handles remove.def argument correctly",{
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe <- parameterEstimates(fit, remove.def = TRUE)
+  pe <- parameterEstimates(FIT_CFA_HS, remove.def = TRUE)
   expect_false(any(pe$op == ":="), 
                label = ":= rows exist in the result when remove.def is TRUE")
 })
@@ -139,40 +87,28 @@ test_that("parameterEstimate handles remove.def argument correctly",{
 #TODO: remove.nonfree, remove.step1, remove.unused
 
 test_that("parameterEstimates handles 'output' argument correctly", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe_df <- parameterEstimates(fit, output = "data.frame")
-  pe_table <- parameterEstimates(fit, output = "table") # alias
+  pe_df <- parameterEstimates(FIT_CFA_HS, output = "data.frame")
+  pe_table <- parameterEstimates(FIT_CFA_HS, output = "table") # alias
   expect_true(is.data.frame(pe_df))
-  pe_text <- parameterEstimates(fit, output = "text")
-  pe_pretty <- parameterEstimates(fit, output = "pretty") # alias
+  pe_text <- parameterEstimates(FIT_CFA_HS, output = "text")
+  pe_pretty <- parameterEstimates(FIT_CFA_HS, output = "pretty") # alias
   expect_true(is.character(pe_text) | is.list(pe_text), label = "Output is list when output = 'text'/'pretty'")
   expect_s3_class(pe_text, "lavaan.parameterEstimates") # this class is added only when output is text/pretty
-  expect_error(parameterEstimates(fit, output = "something"), "lavaan ERROR: output must be")
+  expect_error(parameterEstimates(FIT_CFA_HS, output = "something"), "lavaan ERROR: output must be")
 })
 
 test_that("parameterEstimates handles 'output' argument correctly", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  pe_df <- parameterEstimates(fit, output = "data.frame")
+  pe_df <- parameterEstimates(FIT_CFA_HS, output = "data.frame")
   expect_null(attr(pe_df, "header"))
-  pe_noheader <- parameterEstimates(fit, output = "text", header = FALSE)
+  pe_noheader <- parameterEstimates(FIT_CFA_HS, output = "text", header = FALSE)
   expect_null(attr(pe_noheader, "header"))
-  pe_header <- parameterEstimates(fit, output = "text", header = TRUE)
+  pe_header <- parameterEstimates(FIT_CFA_HS, output = "text", header = TRUE)
   expect_equal(attr(pe_header, "header"), TRUE)
 })
 
 # Reproduce HolzingerSwineford1939
 test_that("parameterEstimate reproduce the result of HolzingerSwineford1939", {
-  HS.model <- 'visual  =~ x1 + x2 + x3 
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-  fit <- cfa(HS.model, data=HolzingerSwineford1939)
-  res <- parameterEstimates(fit)
+  res <- parameterEstimates(FIT_CFA_HS)
   # see this example https://lavaan.ugent.be/tutorial/inspect.html#parameterestimates
   ref_df <- data.frame(
     lhs = c(

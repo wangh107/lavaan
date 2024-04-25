@@ -1,11 +1,5 @@
 testthat::test_that("Returns list when no issues present", {
-  HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-
-  fit <- cfa(HS.model, data = HolzingerSwineford1939)
-
-  res <- lav_model_test(fit)
+  res <- lav_model_test(FIT_CFA_HS)
 
   expect_true(is.list(res))
 })
@@ -142,8 +136,3 @@ testthat::test_that("Returns correct class - bollen.stine", {
   expect_true(is.list(res))
 
 })
-
-
-
-
-
