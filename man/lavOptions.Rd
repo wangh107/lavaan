@@ -17,7 +17,7 @@ string vector holding multiple option names. All option names are converted to
 lower case.}
 \item{default}{If a single option is specified but not available, this value
 is returned.}
-\item{mimic}{Character. Adjust the option list for this mimic flag.}
+\item{mimic}{Not used for now.}
 }
 \details{
 This is the full list of options that are accepted by the \code{lavaan()}
@@ -173,6 +173,10 @@ Data options:
       If \code{"group"}, the sampling weights are normalized per group:
       by dividing by the sum of the weights (in each group), and multiplying
       again by the group size. The default is \code{"total"}.}
+    \item{\code{samplestats}:}{Logical. If \code{FALSE}, no sample statistics
+      will be computed (and no estimation can take place). This can be useful
+      when only a dummy lavaan object is requested, without any computations.
+      The default is \code{TRUE}.}
 }
 
 Data summary options:
@@ -184,8 +188,12 @@ Data summary options:
       on the estimator and the likelihood option: it is set to \code{TRUE} if 
       maximum likelihood estimation is used and \code{likelihood="normal"}, 
       and \code{FALSE} otherwise.}
-    \item{\code{ridge}:}{Numeric. Small constant used for ridging. Only used 
-      if the sample covariance matrix is non positive definite.}
+    \item{\code{ridge}:}{Logical. If \code{TRUE} a small constant value will
+      be added the diagonal elements of the covariance (or correlation) 
+      matrix before analysis. The value can be set using the 
+      \code{ridge.constant} option.}
+    \item{\code{ridge.constant}:}{Numeric. Small constant used for ridging.
+      The default value is 1e-05.}
 }
 
 Multiple group options:
