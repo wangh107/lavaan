@@ -1,8 +1,11 @@
 # Input
-
 test_that("lavParseModelString's parser argument only takes certain string", {
   expect_error(lavParseModelString(MODEL_CFA_HS, parser = "INVALID"),
                'lavaan ERROR: parser= argument should be "old" or "new"')
+  # capital or not capital
+  res_cap <- lavParseModelString(MODEL_CFA_HS, parser = "NEW")
+  res_nocap <- lavParseModelString(MODEL_CFA_HS, parser = "new")
+  expect_equal(res_cap, res_nocap)
 })
 
 test_that("lavParseModelString takes input example from documentation", {
