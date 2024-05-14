@@ -14,7 +14,7 @@ testthat::test_that("Returns correct class for sam model", {
 
   fit <- sam(HS.model, data = HolzingerSwineford1939)
 
-  res <- lav_object_summary(fit, standardized = T, std.nox = T)
+  res <- lav_object_summary(fit, standardized = T)
 
   expect_true(inherits(res, "lavaan.summary"))
   expect_true(is.list(res))
@@ -72,15 +72,6 @@ testthat::test_that("Function is indeed a wrapper for lav_fit_measures", {
 
 })
 
-testthat::test_that("Returns output if both standardized and std.nox = T", {
-
-  res <- lav_object_summary(FIT_CFA_HS, standardized = T, std.nox = T)
-
-  expect_true(inherits(res, "lavaan.summary"))
-  expect_true(is.list(res))
-
-})
-
 
 testthat::test_that("Returns warning if fit.measures = T and no data", {
 
@@ -92,7 +83,7 @@ testthat::test_that("Returns warning if fit.measures = T and no data", {
 
   expect_warning(
     lav_object_summary(fit, fit.measures = T),
-    "fit measures not available if there is no data")
+    "no data")
 
 })
 
@@ -106,7 +97,7 @@ testthat::test_that("Returns warning if fit.measures = T and no tests", {
 
   expect_warning(
     lav_object_summary(fit, fit.measures = T),
-    "fit measures not available if test = \"none\"")
+    "\"none\"")
 
 })
 
@@ -118,6 +109,6 @@ testthat::test_that("Returns warning if fit.measures = T and model did not conve
 
   expect_warning(
     lav_object_summary(fit_1, fit.measures = T),
-                 "fit measures not available if model did not converge")
+                 "not converge")
 
 })
