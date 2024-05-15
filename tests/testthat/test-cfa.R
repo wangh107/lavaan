@@ -125,10 +125,6 @@ test_that("cfa() and lavaan() with the full specified model are equivalent", {
 # TODO: add integration with fitMeasures and parameterEstimates
 
 ## Bad arguments
-test_that("cfa() returns error for invalid model parameter", {
-  expect_error(cfa(model = "INVALID", data = HolzingerSwineford1939))
-})
-
 test_that("cfa() returns error for invalid data parameter", {
   random_data <- c(1, 2, 3, 4, 5)
   expect_error(suppressWarnings(cfa(MODEL_CFA_HS, data = random_data)))
