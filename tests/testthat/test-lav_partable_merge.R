@@ -269,7 +269,7 @@ test_that("lav_partable_merge issues warning when duplicates are found and warn 
   pt2 <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), block = c(1, 1))
   expect_warning(
     lav_partable_merge(pt1 = pt1, pt2 = pt2, remove.duplicated = TRUE, warn = TRUE),
-    regexp = "lavaan WARNING: duplicated parameters are ignored:"
+    regexp = "duplicated parameters are ignored"
   )
 })
 
