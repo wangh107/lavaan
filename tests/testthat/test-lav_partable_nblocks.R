@@ -9,7 +9,6 @@ test_that("lav_partable_nblocks only takes partable", {
 
 
 test_that("lav_partable_nblocks returns an integer", {
-
   res <- lav_partable_nblocks(parTable(FIT_CFA_HS))
 
   expect_true(is.integer(res))

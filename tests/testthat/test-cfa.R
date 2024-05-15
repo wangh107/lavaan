@@ -28,7 +28,7 @@ test_that("cfa() function with and without explicit arguments (i.e. default argu
   )
   # Compare captured calls
   call_default <- as.list(attr(fit_default, "call"))
-  call_explicit <-  as.list(attr(fit_explicit, "call"))
+  call_explicit <- as.list(attr(fit_explicit, "call"))
 
   for (arg in names(call_default)) {
     if (arg %in% c("", "model", "data")) next
@@ -234,7 +234,7 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
 
   x <- as.data.frame(res$pe)
 
-  output_params <- data.frame(lapply(x, function(y) if(is.numeric(y)) round(y, 3) else y))
+  output_params <- data.frame(lapply(x, function(y) if (is.numeric(y)) round(y, 3) else y))
 
   output_params <- output_params[, c("lhs", "op", "rhs", "est", "se", "z", "pvalue")]
   expect_equal(output_params, expected_params,
