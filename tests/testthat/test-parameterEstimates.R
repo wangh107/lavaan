@@ -98,7 +98,7 @@ test_that("parameterEstimates handles 'output' argument correctly", {
   pe_pretty <- parameterEstimates(FIT_CFA_HS, output = "pretty") # alias
   expect_true(is.character(pe_text) | is.list(pe_text), label = "Output is list when output = 'text'/'pretty'")
   expect_s3_class(pe_text, "lavaan.parameterEstimates") # this class is added only when output is text/pretty
-  expect_error(parameterEstimates(FIT_CFA_HS, output = "something"), "lavaan ERROR: output must be")
+  expect_error(parameterEstimates(FIT_CFA_HS, output = "something"), "output must be 'data.frame' or 'text'")
 })
 
 test_that("parameterEstimates handles 'output' argument correctly", {
