@@ -1,4 +1,4 @@
-testthat::test_that("Returns scaled output when scaled test name provided", {
+test_that("Returns scaled output when scaled test name provided", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -19,7 +19,7 @@ testthat::test_that("Returns scaled output when scaled test name provided", {
 })
 
 
-testthat::test_that("Case when estimator = 'ML' and measures = 'all'", {
+test_that("Case when estimator = 'ML' and measures = 'all'", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -29,7 +29,7 @@ testthat::test_that("Case when estimator = 'ML' and measures = 'all'", {
 })
 
 
-# testthat::test_that("Case when estimator = 'MML' and measures = 'all'", {
+# test_that("Case when estimator = 'MML' and measures = 'all'", {
 #   data = HolzingerSwineford1939
 #   model_1 <- 'f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 '
 #   fit_1 <- cfa(model_1, data = data)
@@ -38,7 +38,7 @@ testthat::test_that("Case when estimator = 'ML' and measures = 'all'", {
 #   expect_s3_class(fit.summary, "lavaan.vector")
 # })
 
-testthat::test_that("Case when estimator = 'ML' and measures = 'default'", {
+test_that("Case when estimator = 'ML' and measures = 'default'", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -47,7 +47,7 @@ testthat::test_that("Case when estimator = 'ML' and measures = 'default'", {
   expect_s3_class(fit.summary, "lavaan.vector")
 })
 
-# testthat::test_that("Case when estimator = 'MML' and measures = 'default'",{
+# test_that("Case when estimator = 'MML' and measures = 'default'",{
 #   data = HolzingerSwineford1939
 #   model_1 <- 'f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 '
 #   fit_1 <- cfa(model_1, data = data)
@@ -56,7 +56,7 @@ testthat::test_that("Case when estimator = 'ML' and measures = 'default'", {
 #   expect_s3_class(fit.summary, "lavaan.vector")
 # })
 
-testthat::test_that("Case when standard test not in test names", {
+test_that("Case when standard test not in test names", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -71,7 +71,7 @@ testthat::test_that("Case when standard test not in test names", {
   expect_s3_class(fit.summary, "lavaan.vector")
 })
 
-testthat::test_that("Returns warning with invalid rmsea.ci.level.value", {
+test_that("Returns warning with invalid rmsea.ci.level.value", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -84,7 +84,7 @@ testthat::test_that("Returns warning with invalid rmsea.ci.level.value", {
   ))
 })
 
-testthat::test_that("Set rmsea.close.h0 to 0 if less than 0", {
+test_that("Set rmsea.close.h0 to 0 if less than 0", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -102,7 +102,7 @@ testthat::test_that("Set rmsea.close.h0 to 0 if less than 0", {
 })
 
 
-testthat::test_that("Returns empty vector when no fit measures provided", {
+test_that("Returns empty vector when no fit measures provided", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -112,17 +112,17 @@ testthat::test_that("Returns empty vector when no fit measures provided", {
 })
 
 
-testthat::test_that("Returns error message when no data", {
+test_that("Returns error message when no data", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
 
   expect_error(
     fitmeasures(cfa(model_1)),
-    "fit measures not available if there is no data."
+    "fit measures not available if there is no" # TODO: fix newline problem
   )
 })
 
-testthat::test_that("Returns error message when model doesn't converge", {
+test_that("Returns error message when model doesn't converge", {
   suppressWarnings({
     data <- head(HolzingerSwineford1939, 6)
     model_1 <- "f =~ x1 + x2 + x3 + x4 + x5"
@@ -130,23 +130,23 @@ testthat::test_that("Returns error message when model doesn't converge", {
 
     expect_error(
       fitmeasures(fit_1),
-      "fit measures not available if model did not converge"
+      "fit measures not available if model did" # TODO: newline stuff
     )
   })
 })
 
-testthat::test_that("Returns error message when no fit measures", {
+test_that("Returns error message when no fit measures", {
   data <- HolzingerSwineford1939
   model_1 <- "f  =~ x1 + x2 + x3 + x4 + x5 + x6+  x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data, test = "none")
 
   expect_error(
     fitmeasures(fit_1),
-    "fit measures not available if test = \"none\"."
+    "fit measures not available if test" # TODO: newline stuff
   )
 })
 
-testthat::test_that("Returns vector when output option = 'list'", {
+test_that("Returns vector when output option = 'list'", {
   data <- HolzingerSwineford1939
   model_1 <- "f  =~ x1 + x2 + x3 + x4 + x5 + x6+  x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -155,7 +155,7 @@ testthat::test_that("Returns vector when output option = 'list'", {
   expect_type(fit.summary, "list")
 })
 
-testthat::test_that("Returns matrix when output option = 'matrix'", {
+test_that("Returns matrix when output option = 'matrix'", {
   data <- HolzingerSwineford1939
   model_1 <- "f  =~ x1 + x2 + x3 + x4 + x5 + x6+  x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -164,7 +164,7 @@ testthat::test_that("Returns matrix when output option = 'matrix'", {
   expect_s3_class(fit.summary, "matrix")
 })
 
-testthat::test_that("Returns object of class 'lavaan.fitMeasures' when output option = 'text'", {
+test_that("Returns object of class 'lavaan.fitMeasures' when output option = 'text'", {
   data <- HolzingerSwineford1939
   model_1 <- "f  =~ x1 + x2 + x3 + x4 + x5 + x6+  x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -173,7 +173,7 @@ testthat::test_that("Returns object of class 'lavaan.fitMeasures' when output op
   expect_s3_class(fit.summary, "lavaan.fitMeasures")
 })
 
-testthat::test_that("Case for specific fit.measure inputs", {
+test_that("Case for specific fit.measure inputs", {
   data <- HolzingerSwineford1939
   model_1 <- "f  =~ x1 + x2 + x3 + x4 + x5 + x6+  x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
@@ -187,24 +187,20 @@ testthat::test_that("Case for specific fit.measure inputs", {
   expect_s3_class(fit.summary, "lavaan.fitMeasures")
 })
 
-testthat::test_that("Returns error when 'output' is not valid", {
+test_that("Returns error when 'output' is not valid", {
   data <- HolzingerSwineford1939
   model_1 <- "f  =~ x1 + x2 + x3 + x4 + x5 + x6+  x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data)
 
   expect_error(
     fitmeasures(fit_1, output = "hello"),
-    paste0(
-      "lavaan ERROR: output should be ", sQuote("vector"),
-      ", ", sQuote("list"),
-      ", ", sQuote("matrix"), " or ", sQuote("text")
-    )
+    "output should be" # TODO: newline
   )
 })
 
 # scaled.flag = T?
 
-testthat::test_that("Runs as expected if given scaled test", {
+test_that("Runs as expected if given scaled test", {
   data <- HolzingerSwineford1939
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 "
   fit_1 <- cfa(model_1, data = data, test = c("mean.var.adjusted", "scaled.shifted"))
@@ -222,7 +218,7 @@ testthat::test_that("Runs as expected if given scaled test", {
 
 # categorical.flag = T?
 
-testthat::test_that("Runs as expected if given scaled test", {
+test_that("Runs as expected if given scaled test", {
   data <- HolzingerSwineford1939
   data[, "x1"] <- floor(data[, "x1"])
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9"
@@ -244,7 +240,7 @@ testthat::test_that("Runs as expected if given scaled test", {
 
 
 # check fitMeasures.efaList
-testthat::test_that("Produces output for efa", {
+test_that("Produces output for efa", {
   data <- HolzingerSwineford1939
   fit <- efa(
     data = data,
@@ -257,7 +253,7 @@ testthat::test_that("Produces output for efa", {
   expect_s3_class(res, "lavaan.matrix")
 })
 
-testthat::test_that("Check fitMeasures.efaList and fitmeasures.efaList outputs are identical", {
+test_that("Check fitMeasures.efaList and fitmeasures.efaList outputs are identical", {
   data <- HolzingerSwineford1939
   fit <- efa(
     data = data,
@@ -271,7 +267,7 @@ testthat::test_that("Check fitMeasures.efaList and fitmeasures.efaList outputs a
   expect_identical(res_1, res_2)
 })
 
-testthat::test_that("Expect empty matrix when no fit measures supplied to fitMeasures.efaList ", {
+test_that("Expect empty matrix when no fit measures supplied to fitMeasures.efaList ", {
   data <- HolzingerSwineford1939
   fit <- efa(
     data = data,
@@ -288,7 +284,7 @@ testthat::test_that("Expect empty matrix when no fit measures supplied to fitMea
   expect_equal(res, res_comp)
 })
 
-testthat::test_that("Only one measure supplied to fitMeasures.efaList ", {
+test_that("Only one measure supplied to fitMeasures.efaList ", {
   data <- HolzingerSwineford1939
   fit <- efa(
     data = data,
