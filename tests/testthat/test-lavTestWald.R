@@ -3,8 +3,7 @@ testthat::test_that("Returns a list when no issues present", {
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
     speed   =~ x7 + b3*x8 + x9
-    b3 == 1
-"
+  " #NOTE: remove b3 == 1
 
   fit <- cfa(HS.model, data = HolzingerSwineford1939)
 
