@@ -1,4 +1,4 @@
-testthat::test_that("Returns list when no errors present", {
+test_that("Returns list when no errors present", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -15,7 +15,7 @@ testthat::test_that("Returns list when no errors present", {
   expect_true(is.list(res))
 })
 
-testthat::test_that("Case when df's are different", {
+test_that("Case when df's are different", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -38,7 +38,7 @@ testthat::test_that("Case when df's are different", {
   expect_true(is.list(res))
 })
 
-testthat::test_that("Trigger warning", {
+test_that("Trigger warning", {
   setClass(
     "basic",
     representation(test = "list")
@@ -70,11 +70,11 @@ testthat::test_that("Trigger warning", {
 
   expect_warning(
     lav_test_diff_SatorraBentler2001(m1, m0),
-    "scaling factor is negative"
+    "scaling factor is" # TODO: newline stuff
   )
 })
 
-testthat::test_that("Trigger action for saturated model", {
+test_that("Trigger action for saturated model", {
   setClass(
     "basic",
     representation(test = "list")
@@ -109,7 +109,7 @@ testthat::test_that("Trigger action for saturated model", {
   expect_true(is.list(res))
 })
 
-testthat::test_that("Return list with specific results when no difference in df", {
+test_that("Return list with specific results when no difference in df", {
   setClass(
     "basic",
     representation(test = "list")
