@@ -1,4 +1,4 @@
-testthat::test_that("Returns a list when no issues present", {
+test_that("Returns a list when no issues present", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -15,7 +15,7 @@ testthat::test_that("Returns a list when no issues present", {
   expect_type(a, "list")
 })
 
-testthat::test_that("Check values returned when no issues present", {
+test_that("Check values returned when no issues present", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -38,7 +38,7 @@ testthat::test_that("Check values returned when no issues present", {
   expect_equal(b, a)
 })
 
-testthat::test_that("Returns list when no issues present - 2 conditions", {
+test_that("Returns list when no issues present - 2 conditions", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -57,7 +57,7 @@ testthat::test_that("Returns list when no issues present - 2 conditions", {
   expect_type(b, "list")
 })
 
-testthat::test_that("Checking verbose option", {
+test_that("Checking verbose option", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -72,7 +72,7 @@ testthat::test_that("Checking verbose option", {
   expect_output(lavTestWald(fit, constraints = "b1 == 0", verbose = TRUE))
 })
 
-testthat::test_that("Returns error message if model doesn't converge", {
+test_that("Returns error message if model doesn't converge", {
   data <- head(HolzingerSwineford1939, 6)
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5"
   fit_1 <- suppressWarnings(cfa(model_1, data = data))
@@ -82,7 +82,7 @@ testthat::test_that("Returns error message if model doesn't converge", {
   )
 })
 
-testthat::test_that("Returns error message when constraints empty", {
+test_that("Returns error message when constraints empty", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -100,7 +100,7 @@ testthat::test_that("Returns error message when constraints empty", {
 })
 
 
-testthat::test_that("Returns error message when no equality constraints", {
+test_that("Returns error message when no equality constraints", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
