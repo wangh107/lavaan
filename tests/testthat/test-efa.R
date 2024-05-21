@@ -1,5 +1,5 @@
 # basic working example
-testthat::test_that("Returns list when no errors present -1", {
+test_that("Returns list when no errors present -1", {
   data <- HolzingerSwineford1939
 
   # should return a list if it works
@@ -14,7 +14,7 @@ testthat::test_that("Returns list when no errors present -1", {
   expect_type(fit, "list")
 })
 
-testthat::test_that("Returns list when no errors present - 2", {
+test_that("Returns list when no errors present - 2", {
   data <- HolzingerSwineford1939[, c(paste0("x", 1:9))]
 
   # working example with no "ov.names"
@@ -29,7 +29,7 @@ testthat::test_that("Returns list when no errors present - 2", {
 })
 
 
-testthat::test_that("Returns S4 when no errors present - lavaan", {
+test_that("Returns S4 when no errors present - lavaan", {
   data <- HolzingerSwineford1939
 
   # working example with "lavaan" output
@@ -47,7 +47,7 @@ testthat::test_that("Returns S4 when no errors present - lavaan", {
 
 
 # sample cov
-testthat::test_that("Working case using sample cov - 1", {
+test_that("Working case using sample cov - 1", {
   data <- cov(HolzingerSwineford1939[paste0("x", 1:9)])
 
   set.seed(1)
@@ -58,7 +58,7 @@ testthat::test_that("Working case using sample cov - 1", {
   expect_type(fit, "list")
 })
 
-testthat::test_that("Working case using sample cov - 2", {
+test_that("Working case using sample cov - 2", {
   data <- cov(HolzingerSwineford1939[paste0("x", 1:9)])
   rownames(data) <- NULL
 
@@ -70,7 +70,7 @@ testthat::test_that("Working case using sample cov - 2", {
   expect_type(fit, "list")
 })
 
-testthat::test_that("Checking equivalence with sample cov - 3", {
+test_that("Checking equivalence with sample cov - 3", {
   data <- cov(HolzingerSwineford1939[paste0("x", 1:9)])
 
   set.seed(1)
@@ -84,7 +84,7 @@ testthat::test_that("Checking equivalence with sample cov - 3", {
 
 
 # no rotation
-testthat::test_that("Returns warning when errors present - rotation", {
+test_that("Returns warning when errors present - rotation", {
   data <- HolzingerSwineford1939
 
   expect_error(efa(
@@ -97,7 +97,7 @@ testthat::test_that("Returns warning when errors present - rotation", {
 })
 
 # no valid factors
-testthat::test_that("Returns error message when errors present - nfactors - 1", {
+test_that("Returns error message when errors present - nfactors - 1", {
   data <- HolzingerSwineford1939
 
   # Logical nfactors input
@@ -113,7 +113,7 @@ testthat::test_that("Returns error message when errors present - nfactors - 1", 
   )
 })
 
-testthat::test_that("Returns error message when errors present - nfactors - 2", {
+test_that("Returns error message when errors present - nfactors - 2", {
   data <- HolzingerSwineford1939
 
   # NA nfactors input
@@ -126,7 +126,7 @@ testthat::test_that("Returns error message when errors present - nfactors - 2", 
   ))
 })
 
-testthat::test_that("Returns error message when errors present - nfactors - 3", {
+test_that("Returns error message when errors present - nfactors - 3", {
   data <- HolzingerSwineford1939
 
   # 0 nfactors input
@@ -142,7 +142,7 @@ testthat::test_that("Returns error message when errors present - nfactors - 3", 
   )
 })
 
-testthat::test_that("Returns error message when errors present - nfactors - 4", {
+test_that("Returns error message when errors present - nfactors - 4", {
   data <- HolzingerSwineford1939
 
   ov.names <- paste("x", 1:9, sep = "")
@@ -175,7 +175,7 @@ testthat::test_that("Returns error message when errors present - nfactors - 4", 
 })
 
 # no ov.names
-testthat::test_that("Returns error message when errors present - ov.names - 1", {
+test_that("Returns error message when errors present - ov.names - 1", {
   data <- HolzingerSwineford1939
 
   # ov.name undefined
@@ -191,7 +191,7 @@ testthat::test_that("Returns error message when errors present - ov.names - 1", 
   )
 })
 
-testthat::test_that("Returns error message when errors present - ov.names - 2", {
+test_that("Returns error message when errors present - ov.names - 2", {
   data <- NULL
 
   # ov.name length == 0L
@@ -208,7 +208,7 @@ testthat::test_that("Returns error message when errors present - ov.names - 2", 
 })
 
 # invalid groups input
-testthat::test_that("Returns error message when errors present - dotdotdot$groups", {
+test_that("Returns error message when errors present - dotdotdot$groups", {
   data <- HolzingerSwineford1939
 
   # invalid dotdotdot$groups
@@ -226,7 +226,7 @@ testthat::test_that("Returns error message when errors present - dotdotdot$group
 })
 
 # invalid output
-testthat::test_that("Returns error message when errors present - output - 1", {
+test_that("Returns error message when errors present - output - 1", {
   data <- HolzingerSwineford1939
 
   # invalid output
@@ -244,7 +244,7 @@ testthat::test_that("Returns error message when errors present - output - 1", {
 })
 
 # output = 'lavaan' error
-testthat::test_that("Returns error message when errors present - output - 2", {
+test_that("Returns error message when errors present - output - 2", {
   data <- HolzingerSwineford1939
 
   # invalid nfactors with output lavaan
@@ -262,7 +262,7 @@ testthat::test_that("Returns error message when errors present - output - 2", {
 })
 
 # invalid data input
-testthat::test_that("Returns error message when errors present - data", {
+test_that("Returns error message when errors present - data", {
   data <- numeric()
 
   # invalid input data
