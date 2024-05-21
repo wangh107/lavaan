@@ -266,11 +266,11 @@ testthat::test_that("Returns error message when errors present - data", {
   data <- numeric()
 
   # invalid input data
-  expect_error(efa(
+  expect_error(suppressWarnings(efa(
     data = data,
     ov.names = paste("x", 1:9, sep = ""),
     nfactors = 1:3,
     rotation = "geomin",
     rotation.args = list(geomin.epsilon = 0.01, rstarts = 1)
-  ))
+  )))
 })
