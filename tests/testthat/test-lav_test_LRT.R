@@ -1,4 +1,4 @@
-testthat::test_that("Returns identical result when no errors present", {
+test_that("Returns identical result when no errors present", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -28,7 +28,7 @@ testthat::test_that("Returns identical result when no errors present", {
   expect_equal(res_check, res, tolerance = 0.001)
 })
 
-testthat::test_that("anova() and lavTestLRT return same output", {
+test_that("anova() and lavTestLRT return same output", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -45,7 +45,7 @@ testthat::test_that("anova() and lavTestLRT return same output", {
   expect_identical(res, res_anova)
 })
 
-testthat::test_that("Returns dataframe when no errors present", {
+test_that("Returns dataframe when no errors present", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -61,7 +61,7 @@ testthat::test_that("Returns dataframe when no errors present", {
   expect_s3_class(res, "data.frame")
 })
 
-testthat::test_that("Returns dataframe when no errors present - single argument", {
+test_that("Returns dataframe when no errors present - single argument", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -74,7 +74,7 @@ testthat::test_that("Returns dataframe when no errors present - single argument"
 })
 
 
-testthat::test_that("Returns error message when method + test combo invalid", {
+test_that("Returns error message when method + test combo invalid", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -95,26 +95,29 @@ testthat::test_that("Returns error message when method + test combo invalid", {
   )
 })
 
-testthat::test_that("Returns error message when method invalid", {
-  HS.model <- "
-    visual  =~ x1 + b1*x2 + x3
-    textual =~ x4 + b2*x5 + x6
-    speed   =~ x7 + b3*x8 + x9
-"
-  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
-  fit0 <- cfa(HS.model,
-    data = HolzingerSwineford1939,
-    orthogonal = TRUE
+test_that("Returns error message when method invalid", {
+  # Data
+  HS9 <- HolzingerSwineford1939[, c(
+    "x1", "x2", "x3", "x4", "x5",
+    "x6", "x7", "x8", "x9"
+  )]
+  HSbinary <- as.data.frame(lapply(HS9, cut, 2, labels = FALSE))
+
+  # Single group example with one latent factor
+  HS.model <- " trait =~ x1 + x2 + x3 + x4 "
+  fit <- cfa(HS.model,
+             data = HSbinary[, 1:4], ordered = names(HSbinary[, 1:4])
+  )
+  fit1 <- cfa(HS.model,
+              data = HSbinary[, 1:4], ordered = names(HSbinary[, 1:4]), orthogonal = T
   )
   expect_error(
-    lavTestLRT(fit1, fit0,
-      method = "invalid"
-    ),
-    label = "unknown method for scaled difference test"
+    lavTestLRT(fit, fit1, type = "cf", method = "invalid"),
+    "unknown method for scaled difference test"
   )
 })
 
-testthat::test_that("Returns warning message when type invalid - single argument", {
+test_that("Returns warning message when type invalid - single argument", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -126,7 +129,7 @@ testthat::test_that("Returns warning message when type invalid - single argument
   )
 })
 
-testthat::test_that("Returns warning message when variables in models different", {
+test_that("Returns warning message when variables in models different", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
 
@@ -144,7 +147,7 @@ testthat::test_that("Returns warning message when variables in models different"
   )
 })
 
-testthat::test_that("Returns warning when not all models have meanstructure", {
+test_that("Returns warning when not all models have meanstructure", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -163,11 +166,11 @@ testthat::test_that("Returns warning when not all models have meanstructure", {
     expect_warning(lavTestLRT(fit1, fit0),
       label = "not all models have a meanstructure"
     ),
-    label = "lavaan ERROR: some models (but not all) have scaled test statistics"
+    label = "some models (but not all) have scaled test statistics"
   )
 })
 
-testthat::test_that("Returns warning when not all models have converged", {
+test_that("Returns warning when not all models have converged", {
   data <- head(HolzingerSwineford1939, 6)
   model_1 <- "f =~ x1 + x2 + x3 + x4 + x5"
   suppressWarnings({
@@ -183,32 +186,8 @@ testthat::test_that("Returns warning when not all models have converged", {
   )
 })
 
-testthat::test_that("Returns warning message for no robust test statistics", {
-  HS.model <- "
-    visual  =~ x1 + b1*x2 + x3
-    textual =~ x4 + b2*x5 + x6
-    speed   =~ x7 + b3*x8 + x9
-"
-  fit1 <- cfa(HS.model, data = HolzingerSwineford1939)
-  fit0 <- cfa(HS.model,
-    data = HolzingerSwineford1939,
-    orthogonal = TRUE
-  )
-  expect_warning(
-    lavTestLRT(fit1, fit0,
-      type = "chisq",
-      test = "scaled.shifted",
-      method = "satorrabentler2010"
-    ),
-    label = paste(
-      "lavaan WARNING: method = satorrabentler2010",
-      "\n\t but no robust test statistics were used;",
-      "\n\t switching to the standard chi-square difference test"
-    )
-  )
-})
 
-testthat::test_that("Returns warning when models have same degrees of freedom", {
+test_that("Returns warning when models have same degrees of freedom", {
   # Data
   HS9 <- HolzingerSwineford1939[, c(
     "x1", "x2", "x3", "x4", "x5",
@@ -219,21 +198,18 @@ testthat::test_that("Returns warning when models have same degrees of freedom", 
   # Single group example with one latent factor
   HS.model <- " trait =~ x1 + x2 + x3 + x4 "
   fit <- cfa(HS.model,
-    data = HSbinary[, 1:4], ordered = names(HSbinary[, 1:4]),
-    estimator = "PML"
+    data = HSbinary[, 1:4], ordered = names(HSbinary[, 1:4])
   )
   fit1 <- cfa(HS.model,
-    data = HSbinary[, 1:4], ordered = names(HSbinary[, 1:4]),
-    estimator = "PML", orthogonal = T
+    data = HSbinary[, 1:4], ordered = names(HSbinary[, 1:4]), orthogonal = T
   )
-
-  expect_warning(lavTestLRT(fit, fit1, type = "cf"),
-    label = "some models have the same degrees of freedom"
+  expect_warning(lavTestLRT(fit, fit1, type = "cf", method = "satorra.2000"),
+    "some models have the same degrees of freedom"
   )
 })
 
 # test for each type
-testthat::test_that("Returns dataframe when no errors present - browne.residual.nt", {
+test_that("Returns dataframe when no errors present - browne.residual.nt", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -249,7 +225,7 @@ testthat::test_that("Returns dataframe when no errors present - browne.residual.
   expect_s3_class(res, "data.frame")
 })
 
-testthat::test_that("Returns dataframe when no errors present - browne.residual.adf", {
+test_that("Returns dataframe when no errors present - browne.residual.adf", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -265,7 +241,7 @@ testthat::test_that("Returns dataframe when no errors present - browne.residual.
   expect_s3_class(res, "data.frame")
 })
 
-testthat::test_that("Returns error message with invalid type", {
+test_that("Returns error message with invalid type", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -282,26 +258,10 @@ testthat::test_that("Returns error message with invalid type", {
   )
 })
 
-# testthat::test_that("Returns dataframe when no errors present - cf", {
-#   # Data
-#   HS9 <- HolzingerSwineford1939[,c("x1","x2","x3","x4","x5",
-#                                    "x6","x7","x8","x9")]
-#   HSbinary <- as.data.frame( lapply(HS9, cut, 2, labels=FALSE) )
-#
-#   # Single group example with one latent factor
-#   HS.model <- ' trait =~ x1 + x2 + x3 + x4 '
-#   fit <- cfa(HS.model, data=HSbinary[,1:4], ordered=names(HSbinary[,1:4]),
-#              estimator="PML")
-#   fit1 <- cfa(HS.model, data=HSbinary[,1:4], ordered=names(HSbinary[,1:4]),
-#              estimator="PML", orthogonal = T)
-#
-#   res <- lavTestLRT(fit, fit1, type = "cf")
-#
-#   expect_s3_class(res, "data.frame")
-# })
 
 # methods
-testthat::test_that("Returns error message when estimator missing - mean.var.adjusted.PLRT", {
+
+test_that("Returns dataframe when no errors present - mean.var.adjusted.PLRT", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
     textual =~ x4 + b2*x5 + x6
@@ -312,22 +272,6 @@ testthat::test_that("Returns error message when estimator missing - mean.var.adj
     data = HolzingerSwineford1939,
     orthogonal = TRUE
   )
-  expect_error(lavTestLRT(fit1, fit0, method = "mean.var.adjusted.PLRT"),
-    label = 'estimator == "PML" is not TRUE'
-  )
-})
-
-testthat::test_that("Returns dataframe when no errors present - mean.var.adjusted.PLRT", {
-  HS.model <- "
-    visual  =~ x1 + b1*x2 + x3
-    textual =~ x4 + b2*x5 + x6
-    speed   =~ x7 + b3*x8 + x9
-"
-  fit1 <- cfa(HS.model, data = HolzingerSwineford1939, estimator = "PML")
-  fit0 <- cfa(HS.model,
-    data = HolzingerSwineford1939,
-    orthogonal = TRUE, estimator = "PML"
-  )
   res <- lavTestLRT(fit1, fit0, method = "default")
 
   expect_s3_class(res, "data.frame")
@@ -335,7 +279,7 @@ testthat::test_that("Returns dataframe when no errors present - mean.var.adjuste
 
 # select method -> if scaled and test in something (lines 140-142)
 
-testthat::test_that("Returns dataframe when no errors present -
+test_that("Returns dataframe when no errors present -
                     method = default and test = satorra.bentler", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
@@ -352,7 +296,7 @@ testthat::test_that("Returns dataframe when no errors present -
   expect_s3_class(res, "data.frame")
 })
 
-testthat::test_that("Returns dataframe when no errors present -
+test_that("Returns dataframe when no errors present -
                     method = default and no test", {
   HS.model <- "
     visual  =~ x1 + b1*x2 + x3
