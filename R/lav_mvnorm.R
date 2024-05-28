@@ -24,6 +24,7 @@
 # YR 04 Okt 2018: adding wt= argument, and missing meanstructure=
 # YR 27 Jun 2018: adding cluster.idx= argument for information_firstorder
 # YR 24 Jul 2022: adding correlation= argument for information_expected
+# YR 27 May 2024: adding correlation= argument to most functions
 
 # 0. densities
 lav_mvnorm_dmvnorm <- function(Y = NULL,
@@ -32,7 +33,7 @@ lav_mvnorm_dmvnorm <- function(Y = NULL,
                                Sigma = NULL,
                                Sigma.inv = NULL,
                                Sinv.method = "eigen",
-                               x.idx = NULL,
+                               x.idx = integer(0L),
                                x.mean = NULL,
                                x.cov = NULL,
                                log = TRUE) {
@@ -83,9 +84,9 @@ lav_mvnorm_dmvnorm <- function(Y = NULL,
   }
 
   # x.idx?
-  if (!is.null(x.idx) && length(x.idx) > 0L) {
+  if (length(x.idx) > 0L) {
     if (is.null(Sigma) && is.null(x.cov)) {
-      lav_msg_stop(gettext("when x.idx is not NULL, we need Sigma or x.cov"))
+      lav_msg_stop(gettext("when x.idx is not empty, we need Sigma or x.cov"))
     }
     if (is.matrix(Y)) {
       X <- Y[, x.idx, drop = FALSE]
@@ -106,7 +107,7 @@ lav_mvnorm_dmvnorm <- function(Y = NULL,
       Y = X, wt = wt, Mu = Mu.X, Sigma = Sigma.X,
       Sigma.inv = NULL,
       Sinv.method = Sinv.method,
-      x.idx = NULL, log = TRUE
+      x.idx = integer(0L), log = TRUE
     )
 
     # subtract logl.X
@@ -128,7 +129,7 @@ lav_mvnorm_loglik_data <- function(Y = NULL,
                                    wt = NULL,
                                    Mu = NULL,
                                    Sigma = NULL,
-                                   x.idx = NULL,
+                                   x.idx = integer(0L),
                                    x.mean = NULL,
                                    x.cov = NULL,
                                    casewise = FALSE,
@@ -196,7 +197,7 @@ lav_mvnorm_loglik_data <- function(Y = NULL,
   }
 
   # fixed.x?
-  if (!is.null(x.idx) && length(x.idx) > 0L) {
+  if (length(x.idx) > 0L) {
     Mu.X <- x.mean
     Sigma.X <- x.cov
     if (is.null(x.mean)) {
@@ -208,7 +209,7 @@ lav_mvnorm_loglik_data <- function(Y = NULL,
     loglik.x <- lav_mvnorm_loglik_data(
       Y = Y[, x.idx, drop = FALSE],
       wt = wt, Mu = Mu.X, Sigma = Sigma.X,
-      x.idx = NULL, casewise = casewise,
+      x.idx = integer(0L), casewise = casewise,
       Sinv.method = Sinv.method
     )
     # subtract logl.X
@@ -226,7 +227,7 @@ lav_mvnorm_loglik_samplestats <- function(sample.mean = NULL,
                                           sample.nobs = NULL,
                                           Mu = NULL,
                                           Sigma = NULL,
-                                          x.idx = NULL,
+                                          x.idx = integer(0L),
                                           x.mean = NULL,
                                           x.cov = NULL,
                                           Sinv.method = "eigen",
@@ -261,7 +262,7 @@ lav_mvnorm_loglik_samplestats <- function(sample.mean = NULL,
   loglik <- -N / 2 * (P * LOG.2PI + logdet + DIST1 + DIST2)
 
   # fixed.x?
-  if (!is.null(x.idx) && length(x.idx) > 0L) {
+  if (length(x.idx) > 0L) {
     Mu.X <- x.mean
     Sigma.X <- x.cov
     if (is.null(x.mean)) {
@@ -278,7 +279,7 @@ lav_mvnorm_loglik_samplestats <- function(sample.mean = NULL,
         sample.cov = sample.cov.x,
         sample.nobs = sample.nobs,
         Mu = Mu.X, Sigma = Sigma.X,
-        x.idx = NULL,
+        x.idx = integer(0L),
         Sinv.method = Sinv.method
       )
     # subtract logl.X
@@ -337,7 +338,7 @@ lav_mvnorm_dlogl_dmu <- function(Y = NULL,
                                  wt = NULL,
                                  Mu = NULL,
                                  Sigma = NULL,
-                                 x.idx = NULL,
+                                 x.idx = integer(0L),
                                  Sinv.method = "eigen",
                                  Sigma.inv = NULL) {
   Mu <- as.numeric(Mu)
@@ -374,7 +375,8 @@ lav_mvnorm_dlogl_dSigma <- function(Y = NULL,
                                     wt = NULL,
                                     Mu = NULL,
                                     Sigma = NULL,
-                                    x.idx = NULL,
+                                    x.idx = integer(0L),
+                                    correlation = FALSE,
                                     Sinv.method = "eigen",
                                     Sigma.inv = NULL) {
   if (!is.null(wt)) {
@@ -409,6 +411,11 @@ lav_mvnorm_dlogl_dSigma <- function(Y = NULL,
   # derivative
   dSigma <- -(N / 2) * (Sigma.inv - (Sigma.inv %*% W.tilde %*% Sigma.inv))
 
+  # correlation?
+  if (correlation) {
+    diag(dSigma) <- 0
+  }
+
   # fixed.x?
   if (length(x.idx) > 0L) {
     dSigma[x.idx, x.idx] <- 0
@@ -422,7 +429,8 @@ lav_mvnorm_dlogl_dvechSigma <- function(Y = NULL,
                                         wt = NULL,
                                         Mu = NULL,
                                         Sigma = NULL,
-                                        x.idx = NULL,
+                                        x.idx = integer(0L),
+                                        correlation = FALSE,
                                         Sinv.method = "eigen",
                                         Sigma.inv = NULL) {
   if (!is.null(wt)) {
@@ -459,9 +467,16 @@ lav_mvnorm_dlogl_dvechSigma <- function(Y = NULL,
     dSigma[x.idx, x.idx] <- 0
   }
 
-  dvechSigma <- as.numeric(lav_matrix_duplication_pre(
-    as.matrix(lav_matrix_vec(dSigma))
-  ))
+  # vech
+  if (correlation) {
+    dvechSigma <- as.numeric(lav_matrix_duplication_cor_pre(
+      as.matrix(lav_matrix_vec(dSigma))
+    ))
+  } else {
+    dvechSigma <- as.numeric(lav_matrix_duplication_pre(
+      as.matrix(lav_matrix_vec(dSigma))
+    ))
+  }
 
   dvechSigma
 }
@@ -471,7 +486,8 @@ lav_mvnorm_dlogl_dmu_dvechSigma <- function(Y = NULL,
                                             wt = NULL,
                                             Mu = NULL,
                                             Sigma = NULL,
-                                            x.idx = NULL,
+                                            x.idx = integer(0L),
+                                            correlation = FALSE,
                                             Sinv.method = "eigen",
                                             Sigma.inv = NULL) {
   if (!is.null(wt)) {
@@ -514,9 +530,16 @@ lav_mvnorm_dlogl_dmu_dvechSigma <- function(Y = NULL,
     dmu[x.idx] <- 0
   }
 
-  dvechSigma <- as.numeric(lav_matrix_duplication_pre(
-    as.matrix(lav_matrix_vec(dSigma))
-  ))
+  # vech
+  if (correlation) {
+    dvechSigma <- as.numeric(lav_matrix_duplication_cor_pre(
+      as.matrix(lav_matrix_vec(dSigma))
+    ))
+  } else {
+    dvechSigma <- as.numeric(lav_matrix_duplication_pre(
+      as.matrix(lav_matrix_vec(dSigma))
+    ))
+  }
 
   c(dmu, dvechSigma)
 }
@@ -527,7 +550,7 @@ lav_mvnorm_dlogl_dmu_dvechSigma <- function(Y = NULL,
 lav_mvnorm_scores_mu <- function(Y = NULL,
                                  wt = NULL,
                                  Mu = NULL,
-                                 x.idx = NULL,
+                                 x.idx = integer(0L),
                                  Sigma = NULL,
                                  Sinv.method = "eigen",
                                  Sigma.inv = NULL) {
@@ -565,7 +588,8 @@ lav_mvnorm_scores_vech_sigma <- function(Y = NULL,
                                          wt = NULL,
                                          Mu = NULL,
                                          Sigma = NULL,
-                                         x.idx = NULL,
+                                         x.idx = integer(0L),
+                                         correlation = FALSE,
                                          Sinv.method = "eigen",
                                          Sigma.inv = NULL) {
   P <- NCOL(Y)
@@ -599,15 +623,19 @@ lav_mvnorm_scores_vech_sigma <- function(Y = NULL,
   # adjust for vech
   SC[, lav_matrix_diagh_idx(P)] <- SC[, lav_matrix_diagh_idx(P)] / 2
 
+  # fixed.x?
+  if (length(x.idx) > 0L) {
+    SC[, lav_matrix_vech_which_idx(n = P, idx = x.idx)] <- 0
+  }
+
+  # correlation?
+  if (correlation) {
+    SC <- SC[, -lav_matrix_diagh_idx(n = P), drop = FALSE]
+  }
+
   # weights
   if (!is.null(wt)) {
     SC <- SC * wt
-  }
-
-  # fixed.x?
-  if (length(x.idx) > 0L) {
-    not.x <- eliminate.pstar.idx(P, el.idx = x.idx)
-    SC[, !not.x] <- 0
   }
 
   SC
@@ -618,7 +646,8 @@ lav_mvnorm_scores_mu_vech_sigma <- function(Y = NULL,
                                             wt = NULL,
                                             Mu = NULL,
                                             Sigma = NULL,
-                                            x.idx = NULL,
+                                            x.idx = integer(0L),
+                                            correlation = FALSE,
                                             Sinv.method = "eigen",
                                             Sigma.inv = NULL) {
   P <- NCOL(Y)
@@ -652,17 +681,22 @@ lav_mvnorm_scores_mu_vech_sigma <- function(Y = NULL,
   # adjust for lav_matrix_duplication_pre (not vech!)
   SC[, lav_matrix_diagh_idx(P)] <- SC[, lav_matrix_diagh_idx(P)] / 2
 
+  # fixed.x?
+  if (length(x.idx) > 0L) {
+    Yc[, x.idx] <- 0
+    SC[, lav_matrix_vech_which_idx(n = P, idx = x.idx)] <- 0
+  }
+
+  # correlation?
+  if (correlation) {
+    SC <- SC[, -lav_matrix_diagh_idx(n = P), drop = FALSE]
+  }
+
   out <- cbind(Yc, SC)
 
   # weights
   if (!is.null(wt)) {
     out <- out * wt
-  }
-
-  # fixed.x?
-  if (length(x.idx) > 0L) {
-    not.x <- eliminate.pstar.idx(P, el.idx = x.idx, meanstructure = TRUE)
-    out[, !not.x] <- 0
   }
 
   out
@@ -676,7 +710,8 @@ lav_mvnorm_logl_hessian_data <- function(Y = NULL,
                                          wt = NULL,
                                          Mu = NULL,
                                          Sigma = NULL,
-                                         x.idx = NULL,
+                                         x.idx = integer(0L),
+                                         correlation = FALSE,
                                          Sinv.method = "eigen",
                                          Sigma.inv = NULL,
                                          meanstructure = TRUE) {
@@ -689,8 +724,9 @@ lav_mvnorm_logl_hessian_data <- function(Y = NULL,
   # observed information
   observed <- lav_mvnorm_information_observed_data(
     Y = Y, wt = wt, Mu = Mu,
-    Sigma = Sigma, x.idx = x.idx, Sinv.method = Sinv.method,
-    Sigma.inv = Sigma.inv, meanstructure = meanstructure
+    Sigma = Sigma, x.idx = x.idx, correlation = correlation,
+    Sinv.method = Sinv.method, Sigma.inv = Sigma.inv,
+    meanstructure = meanstructure
   )
 
   -N * observed
@@ -703,7 +739,8 @@ lav_mvnorm_logl_hessian_samplestats <-
            sample.nobs = NULL,
            Mu = NULL,
            Sigma = NULL,
-           x.idx = NULL,
+           x.idx = integer(0L),
+           correlation = FALSE,
            Sinv.method = "eigen",
            Sigma.inv = NULL,
            meanstructure = TRUE) {
@@ -711,9 +748,10 @@ lav_mvnorm_logl_hessian_samplestats <-
 
     # observed information
     observed <- lav_mvnorm_information_observed_samplestats(
-      sample.mean =
-        sample.mean, sample.cov = sample.cov, Mu = Mu, Sigma = Sigma,
-      x.idx = x.idx, Sinv.method = Sinv.method, Sigma.inv = Sigma.inv,
+      sample.mean = sample.mean, sample.cov = sample.cov,
+      Mu = Mu, Sigma = Sigma,
+      x.idx = x.idx, correlation = correlation,
+      Sinv.method = Sinv.method, Sigma.inv = Sigma.inv,
       meanstructure = meanstructure
     )
 
@@ -727,11 +765,11 @@ lav_mvnorm_information_expected <- function(Y = NULL, # unused!
                                             wt = NULL, # unused!
                                             Mu = NULL, # unused!
                                             Sigma = NULL,
-                                            x.idx = NULL,
+                                            x.idx = integer(0L),
+                                            correlation = FALSE,
                                             Sinv.method = "eigen",
                                             Sigma.inv = NULL,
-                                            meanstructure = TRUE,
-                                            correlation = FALSE) {
+                                            meanstructure = TRUE) {
   if (is.null(Sigma.inv)) {
     # invert Sigma
     Sigma.inv <- lav_matrix_symmetric_inverse(
@@ -747,22 +785,26 @@ lav_mvnorm_information_expected <- function(Y = NULL, # unused!
     I22 <- 0.5 * lav_matrix_duplication_pre_post(Sigma.inv %x% Sigma.inv)
   }
 
+  # fixed.x?
+  if (length(x.idx) > 0L) {
+    pstar.x <- lav_matrix_vech_which_idx(
+      n = NCOL(Sigma.inv), idx = x.idx,
+      diagonal = !correlation
+    )
+    I22[pstar.x, ] <- 0
+    I22[, pstar.x] <- 0
+  }
+
   if (meanstructure) {
     I11 <- Sigma.inv
+    # fixed.x?
+    if (length(x.idx) > 0L) {
+      I11[x.idx, ] <- 0
+      I11[, x.idx] <- 0
+    }
     out <- lav_matrix_bdiag(I11, I22)
   } else {
     out <- I22
-  }
-
-  # fixed.x?
-  if (length(x.idx) > 0L) {
-    not.x <- eliminate.pstar.idx(
-      nvar = NCOL(Sigma.inv),
-      el.idx = x.idx,
-      meanstructure = meanstructure
-    )
-    out[!not.x, ] <- 0
-    out[, !not.x] <- 0
   }
 
   out
@@ -773,7 +815,8 @@ lav_mvnorm_information_observed_data <- function(Y = NULL,
                                                  wt = NULL,
                                                  Mu = NULL,
                                                  Sigma = NULL,
-                                                 x.idx = NULL,
+                                                 x.idx = integer(0L),
+                                                 correlation = FALSE,
                                                  Sinv.method = "eigen",
                                                  Sigma.inv = NULL,
                                                  meanstructure = TRUE) {
@@ -791,68 +834,79 @@ lav_mvnorm_information_observed_data <- function(Y = NULL,
 
   lav_mvnorm_information_observed_samplestats(
     sample.mean = sample.mean,
-    sample.cov = sample.cov, Mu = Mu, Sigma = Sigma, x.idx = x.idx,
+    sample.cov = sample.cov, Mu = Mu, Sigma = Sigma,
+    x.idx = x.idx, correlation = correlation,
     Sinv.method = Sinv.method, Sigma.inv = Sigma.inv,
     meanstructure = meanstructure
   )
 }
 
 # 5b-bis: observed information h0 from sample statistics
-lav_mvnorm_information_observed_samplestats <-
-  function(sample.mean = NULL,
-           sample.cov = NULL,
-           Mu = NULL,
-           Sigma = NULL,
-           x.idx = NULL,
-           Sinv.method = "eigen",
-           Sigma.inv = NULL,
-           meanstructure = TRUE) {
-    sample.mean <- as.numeric(sample.mean)
-    Mu <- as.numeric(Mu)
+lav_mvnorm_information_observed_samplestats <- function(
+    sample.mean = NULL,
+    sample.cov = NULL,
+    Mu = NULL,
+    Sigma = NULL,
+    x.idx = integer(0L),
+    correlation = FALSE,
+    Sinv.method = "eigen",
+    Sigma.inv = NULL,
+    meanstructure = TRUE) {
 
-    if (is.null(Sigma.inv)) {
-      # invert Sigma
-      Sigma.inv <- lav_matrix_symmetric_inverse(
-        S = Sigma, logdet = FALSE,
-        Sinv.method = Sinv.method
-      )
-    }
+  sample.mean <- as.numeric(sample.mean)
+  Mu <- as.numeric(Mu)
 
-    W.tilde <- sample.cov + tcrossprod(sample.mean - Mu)
-
-    if (meanstructure) {
-      I11 <- Sigma.inv
-      I21 <- lav_matrix_duplication_pre((Sigma.inv %*%
-        (sample.mean - Mu)) %x%
-        Sigma.inv)
-      I12 <- t(I21)
-    }
-
-    AAA <- Sigma.inv %*% (2 * W.tilde - Sigma) %*% Sigma.inv
-    I22 <- (1 / 2) * lav_matrix_duplication_pre_post(Sigma.inv %x% AAA)
-
-    if (meanstructure) {
-      out <- rbind(
-        cbind(I11, I12),
-        cbind(I21, I22)
-      )
-    } else {
-      out <- I22
-    }
-
-    # fixed.x?
-    if (length(x.idx) > 0L) {
-      not.x <- eliminate.pstar.idx(
-        nvar = length(sample.mean),
-        el.idx = x.idx,
-        meanstructure = meanstructure
-      )
-      out[, !not.x] <- 0
-      out[!not.x, ] <- 0
-    }
-
-    out
+  if (is.null(Sigma.inv)) {
+    # invert Sigma
+    Sigma.inv <- lav_matrix_symmetric_inverse(
+      S = Sigma, logdet = FALSE,
+      Sinv.method = Sinv.method
+    )
   }
+
+  W.tilde <- sample.cov + tcrossprod(sample.mean - Mu)
+
+  if (meanstructure) {
+    I11 <- Sigma.inv
+	if (correlation) {
+      I21 <- lav_matrix_duplication_cor_pre((Sigma.inv %*%
+        (sample.mean - Mu)) %x% Sigma.inv)
+	} else {
+      I21 <- lav_matrix_duplication_pre((Sigma.inv %*%
+        (sample.mean - Mu)) %x% Sigma.inv)
+    }
+    I12 <- t(I21)
+  }
+
+  AAA <- Sigma.inv %*% (2 * W.tilde - Sigma) %*% Sigma.inv
+  if (correlation) {
+    I22 <- (1 / 2) * lav_matrix_duplication_cor_pre_post(Sigma.inv %x% AAA)
+  } else {
+    I22 <- (1 / 2) * lav_matrix_duplication_pre_post(Sigma.inv %x% AAA)
+  }
+
+  if (meanstructure) {
+    out <- rbind(
+      cbind(I11, I12),
+      cbind(I21, I22)
+    )
+  } else {
+    out <- I22
+  }
+
+  # fixed.x?
+  if (length(x.idx) > 0L) {
+    not.x <- lav_matrix_vech_which_idx(
+      n = NCOL(Sigma.inv), idx = x.idx,
+      diagonal = !correlation,
+      add.idx.at.start = meanstructure
+    )
+    out[, not.x] <- 0
+    out[not.x, ] <- 0
+  }
+
+  out
+}
 
 # 5c: unit first-order information h0
 lav_mvnorm_information_firstorder <- function(Y = NULL,
@@ -860,7 +914,8 @@ lav_mvnorm_information_firstorder <- function(Y = NULL,
                                               cluster.idx = NULL,
                                               Mu = NULL,
                                               Sigma = NULL,
-                                              x.idx = NULL,
+                                              x.idx = integer(0L),
+                                              correlation = FALSE,
                                               Sinv.method = "eigen",
                                               Sigma.inv = NULL,
                                               meanstructure = TRUE) {
@@ -873,14 +928,14 @@ lav_mvnorm_information_firstorder <- function(Y = NULL,
   if (meanstructure) {
     SC <- lav_mvnorm_scores_mu_vech_sigma(
       Y = Y, wt = wt,
-      Mu = Mu, Sigma = Sigma, x.idx = x.idx,
+      Mu = Mu, Sigma = Sigma, x.idx = x.idx, correlation = correlation,
       Sinv.method = Sinv.method, Sigma.inv = Sigma.inv
     )
   } else {
     # the caller should use Mu = sample.mean
     SC <- lav_mvnorm_scores_vech_sigma(
       Y = Y, wt = wt,
-      Mu = Mu, Sigma = Sigma,
+      Mu = Mu, Sigma = Sigma, correlation = correlation,
       Sinv.method = Sinv.method, Sigma.inv = Sigma.inv
     )
   }
@@ -915,14 +970,24 @@ lav_mvnorm_inverted_information_expected <- function(Y = NULL, # unused!
                                                      wt = NULL, # unused!
                                                      Mu = NULL, # unused!
                                                      Sigma = NULL,
-                                                     x.idx = NULL,
+                                                     x.idx = integer(0L),
+                                                     correlation = FALSE,
                                                      meanstructure = TRUE) {
+
+  if (correlation) {
+    Info <- lav_mvnorm_information_expected(Y = Y, wt = wt, Mu = Mu,
+      Sigma = Sigma, x.idx = x.idx, correlation = correlation,
+      meanstructure = meanstructure)
+    out <- solve(Info)
+    return(out)
+  }
+
   if (length(x.idx) > 0L) {
     # cov(Y|X) = A - B C^{-1} B'
     # where A = cov(Y), B = cov(Y,X), C = cov(X)
     A <- Sigma[-x.idx, -x.idx, drop = FALSE]
-    B <- Sigma[-x.idx, x.idx, drop = FALSE]
-    C <- Sigma[x.idx, x.idx, drop = FALSE]
+    B <- Sigma[-x.idx,  x.idx, drop = FALSE]
+    C <- Sigma[ x.idx,  x.idx, drop = FALSE]
     YbarX <- A - B %*% solve(C, t(B))
 
     # reinsert YbarX in Y+X (residual) covariance matrix

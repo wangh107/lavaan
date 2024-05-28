@@ -318,12 +318,14 @@ lav_options_set <- function(opt = NULL) {                     # nolint
     # test
     if (length(opt$test) == 1L && opt$test == "default") {
       # ok, will be set later
-    } else if (all(opt$test %in% c("none", "standard", "yuan.bentler"))) {
+    } else if (all(opt$test %in% c("none", "standard", "yuan.bentler",
+	                               "yuan.bentler.mplus"))) {
       # nothing to do
     } else {
       lav_msg_stop(gettextf(
         "`test' argument must one of %s in the multilevel case",
-        lav_msg_view(c("none", "standard", "yuan.bentler"), log.sep = "or")))
+        lav_msg_view(c("none", "standard", "yuan.bentler",
+		               "yuan.bentler.mplus"), log.sep = "or")))
     }
 
     # se
@@ -485,7 +487,7 @@ lav_options_set <- function(opt = NULL) {                     # nolint
     if (length(opt$test) > 1L) {
       lav_msg_warn(gettextf(
         "test= argument can only contain a single element if missing = %s
-        (taking the first)"), dQuote(opt$missing))
+        (taking the first)", dQuote(opt$missing)))
       opt$test <- opt$test[1]
     }
 
@@ -508,8 +510,8 @@ lav_options_set <- function(opt = NULL) {                     # nolint
     if (opt$meanstructure == FALSE) {
       if (any(opt$missing == c("ml", "ml.x", "two.stage"))) {
         lav_msg_warn(gettextf(
-          "missing argument %s forces meanstructure = TRUE"),
-          opt$missing)
+          "missing argument %s forces meanstructure = TRUE",
+          opt$missing))
       }
     }
   } else if (opt$meanstructure == "default") {
@@ -993,12 +995,13 @@ lav_options_set <- function(opt = NULL) {                     # nolint
     opt$rotation.args$orthogonal <- TRUE
   }
 
-  # if target, check target matrix
+  # if target, check target matrix, and set order.lv.by to = "none"
   if (opt$rotation == "target" || opt$rotation == "pst") {
     target <- opt$rotation.args$target
     if (is.null(target) || !is.matrix(target)) {
       lav_msg_stop(gettext("rotation target matrix is NULL, or not a matrix"))
     }
+	opt$rotation.args$order.lv.by <- "none"
   }
   if (opt$rotation == "pst") {
     target.mask <- opt$rotation.args$target.mask
@@ -1059,11 +1062,11 @@ lav_options_set <- function(opt = NULL) {                     # nolint
       lav_msg_stop(gettext(
         "correlation structures only work for representation = \"LISREL\"."))
     }
-    if (opt$fixed.x) {
-      # first fix eliminate.pstar.idx in lav_mvnorm_information_expected()
-      lav_msg_stop(gettext(
-        "correlation structures only work for fixed.x = FALSE (for now)."))
-    }
+    #if (opt$fixed.x) {
+    #  # first fix eliminate.pstar.idx in lav_mvnorm_information_expected()
+    #  lav_msg_stop(gettext(
+    #    "correlation structures only work for fixed.x = FALSE (for now)."))
+    #}
   }
 
   # sample.cov.robust

@@ -21,7 +21,8 @@ lavPredictY <- function(object,
                         method = "conditional.mean",
                         label = TRUE,
                         assemble = TRUE,
-                        force.zero.mean = FALSE) {
+                        force.zero.mean = FALSE,
+                        lambda = 0) {
   stopifnot(inherits(object, "lavaan"))
   lavmodel <- object@Model
   lavdata <- object@Data
@@ -37,7 +38,8 @@ lavPredictY <- function(object,
     # use internal copy:
     if (lavdata@data.type != "full") {
       lav_msg_stop(gettext(
-        "sample statistics were used for fitting and newdata is empty"))
+        "sample statistics were used for fitting and newdata is empty"
+      ))
     } else if (is.null(lavdata@X[[1]])) {
       lav_msg_stop(gettext("no local copy of data; FIXME!"))
     } else {
@@ -76,7 +78,8 @@ lavPredictY <- function(object,
       if (any(orig.ordered.lev - new.ordered.lev != 0)) {
         lav_msg_stop(gettext(
           "mismatch number of categories for some ordered variables in
-          newdata compared to original data."))
+          newdata compared to original data."
+        ))
       }
     }
 
@@ -88,7 +91,8 @@ lavPredictY <- function(object,
   # check ynames
   if (length(ynames) == 0L) {
     lav_msg_stop(gettext(
-      "please specify the y-variables in the ynames= argument"))
+      "please specify the y-variables in the ynames= argument"
+    ))
   } else if (!is.list(ynames)) {
     ynames <- rep(list(ynames), lavdata@ngroups)
   }
@@ -96,7 +100,8 @@ lavPredictY <- function(object,
   # check xnames
   if (length(xnames) == 0L) {
     lav_msg_stop(gettext(
-      "please specify the x-variables in the xnames= argument"))
+      "please specify the x-variables in the xnames= argument"
+    ))
   } else if (!is.list(xnames)) {
     xnames <- rep(list(xnames), lavdata@ngroups)
   }
@@ -107,9 +112,12 @@ lavPredictY <- function(object,
     # ynames in ov.names for this group?
     missing.idx <- which(!ynames[[g]] %in% ov.names[[g]])
     if (length(missing.idx) > 0L) {
-      lav_msg_stop(gettext(
-        "some variable names in ynames do not appear in the dataset:"),
-        lav_msg_view(ynames[[g]][missing.idx], "none"))
+      lav_msg_stop(
+        gettext(
+          "some variable names in ynames do not appear in the dataset:"
+        ),
+        lav_msg_view(ynames[[g]][missing.idx], "none")
+      )
     } else {
       y.idx[[g]] <- match(ynames[[g]], ov.names[[g]])
     }
@@ -117,9 +125,12 @@ lavPredictY <- function(object,
     # xnames in ov.names for this group?
     missing.idx <- which(!xnames[[g]] %in% ov.names[[g]])
     if (length(missing.idx) > 0L) {
-      lav_msg_stop(gettext(
-        "some variable names in xnames do not appear in the dataset:"),
-        lav_msg_view(xnames[[g]][missing.idx], "none"))
+      lav_msg_stop(
+        gettext(
+          "some variable names in xnames do not appear in the dataset:"
+        ),
+        lav_msg_view(xnames[[g]][missing.idx], "none")
+      )
     } else {
       x.idx[[g]] <- match(xnames[[g]], ov.names[[g]])
     }
@@ -133,7 +144,8 @@ lavPredictY <- function(object,
       lavmodel = lavmodel, lavdata = lavdata,
       lavimplied = lavimplied,
       data.obs = data.obs, y.idx = y.idx, x.idx = x.idx,
-      force.zero.mean = force.zero.mean
+      force.zero.mean = force.zero.mean,
+      lambda = lambda
     )
   } else {
     lav_msg_stop(gettext("method must be \"conditional.mean\" (for now)."))
@@ -199,104 +211,173 @@ lavPredictY <- function(object,
 
 
 # method = "conditional.mean"
-lav_predict_y_conditional_mean <-
-  function(lavobject = NULL, # for convenience
-           # object ingredients
-           lavmodel = NULL,
-           lavdata = NULL,
-           lavimplied = NULL,
-           # new data
-           data.obs = NULL,
-           # y and x
-           y.idx = NULL,
-           x.idx = NULL,
-           # options
-           force.zero.mean = FALSE,
-           level = 1L) { # not used for now
+lav_predict_y_conditional_mean <- function(
+    lavobject = NULL, # for convenience
+    # object ingredients
+    lavmodel = NULL,
+    lavdata = NULL,
+    lavimplied = NULL,
+    # new data
+    data.obs = NULL,
+    # y and x
+    y.idx = NULL,
+    x.idx = NULL,
+    # options
+    force.zero.mean = FALSE,
+    lambda = lambda,
+    level = 1L) { # not used for now
 
-    # full object?
-    if (inherits(lavobject, "lavaan")) {
-      lavmodel <- lavobject@Model
-      lavdata <- lavobject@Data
-      # lavsamplestats <- lavobject@SampleStats
-      lavimplied <- lavobject@implied
-    } else {
-      stopifnot(
-        !is.null(lavmodel), !is.null(lavdata),
-        # !is.null(lavsamplestats),
-        !is.null(lavimplied)
-      )
-    }
-
-    # data.obs?
-    if (is.null(data.obs)) {
-      data.obs <- lavdata@X
-    }
-
-    # checks
-    if (lavmodel@categorical) {
-      lav_msg_stop(gettext("no support for categorical data (yet)."))
-    }
-    if (lavdata@nlevels > 1L) {
-      lav_msg_stop(gettext("no support for multilevel data (yet)."))
-    }
-
-    # conditional.x?
-    if (lavmodel@conditional.x) {
-      SigmaHat <- computeSigmaHatJoint(lavmodel)
-      if (lavmodel@meanstructure) {
-        MuHat <- computeMuHatJoint(lavmodel)
-      }
-    } else {
-      SigmaHat <- lavimplied$cov
-      MuHat <- lavimplied$mean
-    }
-
-    # output container
-    YPRED <- vector("list", length = lavdata@ngroups)
-
-    # run over all groups
-    for (g in 1:lavdata@ngroups) {
-      # multiple levels?
-      if (lavdata@nlevels > 1L) {
-        # TODO!
-        lav_msg_stop(gettext("no support for multilevel data (yet)!"))
-      } else {
-        data.obs.g <- data.obs[[g]]
-
-        # model-implied variance-covariance matrix for this group
-        cov.g <- SigmaHat[[g]]
-
-        # model-implied mean vector for this group
-        if (force.zero.mean) {
-          mean.g <- rep(0, ncol(data.obs.g))
-        } else {
-          mean.g <- as.numeric(MuHat[[g]])
-        }
-
-        # indices (in ov.names)
-        y.idx.g <- y.idx[[g]]
-        x.idx.g <- x.idx[[g]]
-
-        # partition y/x
-        Sxx <- cov.g[x.idx.g, x.idx.g, drop = FALSE]
-        Sxy <- cov.g[x.idx.g, y.idx.g, drop = FALSE]
-
-        # x-data only
-        Xtest <- data.obs.g[, x.idx.g, drop = FALSE]
-
-        # mx/my
-        mx <- mean.g[x.idx.g]
-        my <- mean.g[y.idx.g]
-
-        # center using mx
-        Xtest <- t(t(Xtest) - mx)
-
-        # prediction rule
-        tmp <- Xtest %*% solve(Sxx, Sxy)
-        YPRED[[g]] <- t(t(tmp) + my)
-      } # single level
-    } # g
-
-    YPRED
+  # full object?
+  if (inherits(lavobject, "lavaan")) {
+    lavmodel <- lavobject@Model
+    lavdata <- lavobject@Data
+    # lavsamplestats <- lavobject@SampleStats
+    lavimplied <- lavobject@implied
+  } else {
+    stopifnot(
+      !is.null(lavmodel), !is.null(lavdata),
+      # !is.null(lavsamplestats),
+      !is.null(lavimplied)
+    )
   }
+
+  # data.obs?
+  if (is.null(data.obs)) {
+    data.obs <- lavdata@X
+  }
+
+  # checks
+  if (lavmodel@categorical) {
+    lav_msg_stop(gettext("no support for categorical data (yet)."))
+  }
+  if (lavdata@nlevels > 1L) {
+    lav_msg_stop(gettext("no support for multilevel data (yet)."))
+  }
+
+  # conditional.x?
+  if (lavmodel@conditional.x) {
+    SigmaHat <- computeSigmaHatJoint(lavmodel)
+    if (lavmodel@meanstructure) {
+      MuHat <- computeMuHatJoint(lavmodel)
+    }
+  } else {
+    SigmaHat <- lavimplied$cov
+    MuHat <- lavimplied$mean
+  }
+
+  # output container
+  YPRED <- vector("list", length = lavdata@ngroups)
+
+  # run over all groups
+  for (g in 1:lavdata@ngroups) {
+    # multiple levels?
+    if (lavdata@nlevels > 1L) {
+      # TODO!
+      lav_msg_stop(gettext("no support for multilevel data (yet)!"))
+    } else {
+      data.obs.g <- data.obs[[g]]
+
+      # model-implied variance-covariance matrix for this group
+      cov.g <- SigmaHat[[g]]
+
+      # model-implied mean vector for this group
+      if (force.zero.mean) {
+        mean.g <- rep(0, ncol(data.obs.g))
+      } else {
+        mean.g <- as.numeric(MuHat[[g]])
+      }
+
+      # indices (in ov.names)
+      y.idx.g <- y.idx[[g]]
+      x.idx.g <- x.idx[[g]]
+
+      # partition y/x
+      Sxx <- cov.g[x.idx.g, x.idx.g, drop = FALSE]
+      Sxy <- cov.g[x.idx.g, y.idx.g, drop = FALSE]
+
+      # x-data only
+      Xtest <- data.obs.g[, x.idx.g, drop = FALSE]
+
+      # mx/my
+      mx <- mean.g[x.idx.g]
+      my <- mean.g[y.idx.g]
+
+      # center using mx
+      Xtest <- t(t(Xtest) - mx)
+
+      # Apply regularization
+      Sxx <- Sxx + lambda * diag(nrow(Sxx))
+
+      # prediction rule
+      tmp <- Xtest %*% solve(Sxx, Sxy)
+      YPRED[[g]] <- t(t(tmp) + my)
+    } # single level
+  } # g
+
+  YPRED
+}
+
+
+# Takes a sequence of lambdas and performs k-fold cross-validation to determine
+# the best lambda
+lavPredictY_cv <- function(
+    object,
+    data = NULL,
+    xnames = lavNames(object, "ov.x"),
+    ynames = lavNames(object, "ov.y"),
+    n.folds = 10L,
+    lambda.seq = seq(0, 1, 0.1)) {
+
+  # object should be (or inherit from) a lavaan object
+  stopifnot(inherits(object, "lavaan"))
+
+  # results container
+  results <- matrix(as.numeric(NA),
+    nrow = length(lambda.seq) * n.folds,
+    ncol = 2L
+  )
+  colnames(results) <- c("mse", "lambda")
+
+  # shuffle folds
+  folds <- sample(rep(1:n.folds, length.out = nrow(data)))
+
+  # extract Y-data
+  Y <- as.matrix(data[, ynames, drop = FALSE])
+
+  j <- 0L
+  for (i in 1:n.folds) {
+    indis <- which(folds == i)
+    fold.fit <- try(update(object,
+      data = data[-indis, , drop = FALSE],
+      warn = FALSE
+    ), silent = TRUE)
+	if (inherits(fold.fit, "try-error")) {
+	  lav_msg_warn(gettext("failed fit in fold %s", i))
+	  next
+	}
+    for (l in lambda.seq) {
+      j <- j + 1L
+      yhat <- lavPredictY(
+        fold.fit,
+        newdata = data[indis, , drop = FALSE],
+        xnames = xnames,
+        ynames = ynames,
+        lambda = l
+      )
+      y.error <- Y[indis, , drop = FALSE] - yhat
+      mse <- mean(y.error * y.error)
+      results[j, ] <- c(mse, l)
+    }
+  }
+
+  # Group by lambda and determine average MSE per group
+  avg <- aggregate(results[, "mse"],
+    by = list(results[, "lambda"]),
+    FUN = mean, na.rm = TRUE
+  )
+  avg <- avg[order(avg[, 2]), ]
+  names(avg) <- c("lambda", "mse")
+  lambda.min <- avg[1L, "lambda"]
+
+  list(results = avg, lambda.min = lambda.min)
+}
