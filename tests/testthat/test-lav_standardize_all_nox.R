@@ -1,4 +1,4 @@
-testthat::test_that("Returns correct class when no errors present", {
+test_that("Returns correct class when no errors present", {
 
   res <- lav_standardize_all_nox(FIT_CFA_HS)
 
@@ -6,7 +6,7 @@ testthat::test_that("Returns correct class when no errors present", {
 
 })
 
-testthat::test_that("Model contains other kinds of operators", {
+test_that("Model contains other kinds of operators", {
 
   model <- "visual  =~ x1 + b1 * x2 + x3
             textual =~ x4 + b2 * x5 + x6
@@ -23,7 +23,7 @@ testthat::test_that("Model contains other kinds of operators", {
 
 })
 
-testthat::test_that("Returns correct class when only lavmodel and lavpartable provided", {
+test_that("Returns correct class when only lavmodel and lavpartable provided", {
 
   partable <- parametertable(FIT_CFA_HS)
 
@@ -31,7 +31,7 @@ testthat::test_that("Returns correct class when only lavmodel and lavpartable pr
 
 })
 
-testthat::test_that("Returns correct class when no errors present - conditional.x = T", {
+test_that("Returns correct class when no errors present - conditional.x = T", {
 
   model <- '
 
@@ -59,7 +59,7 @@ testthat::test_that("Returns correct class when no errors present - conditional.
 
 })
 
-testthat::test_that("conditional.x = T and implied$cov.x = NULL", {
+test_that("conditional.x = T and implied$cov.x = NULL", {
 
 
   model <- '
@@ -90,7 +90,7 @@ testthat::test_that("conditional.x = T and implied$cov.x = NULL", {
 })
 
 
-testthat::test_that("Stops script if lavpartable$est is NULL", {
+test_that("Stops script if lavpartable$est is NULL", {
 
   partable <- parametertable(FIT_CFA_HS)
   partable$est <- NULL
@@ -100,7 +100,33 @@ testthat::test_that("Stops script if lavpartable$est is NULL", {
 
 })
 
+test_that("Various model operators", {
 
+  model <- '
+
+  # latent variable definitions
+
+     ind60 =~ x1 + x2 + x3
+
+     dem65 =~ y5 + y6 + y7
+
+  # regressions
+
+    dem65 ~ y1 + y2
+
+    ind60 ~ y1 + y2
+
+  # scaling factors
+
+    y6 ~*~ y6
+
+'
+
+  fit <- suppressWarnings(sem(model, PoliticalDemocracy))
+  res <- lav_standardize_all_nox(fit, lavmodel = fit@Model)
+
+  expect_true(is.numeric(res))
+})
 
 
 
