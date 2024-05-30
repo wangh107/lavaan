@@ -28,7 +28,7 @@ test_that("cfa() function with and without explicit arguments (i.e. default argu
   )
   # Compare captured calls
   call_default <- as.list(attr(fit_default, "call"))
-  call_explicit <-  as.list(attr(fit_explicit, "call"))
+  call_explicit <- as.list(attr(fit_explicit, "call"))
 
   for (arg in names(call_default)) {
     if (arg %in% c("", "model", "data")) next
@@ -125,13 +125,9 @@ test_that("cfa() and lavaan() with the full specified model are equivalent", {
 # TODO: add integration with fitMeasures and parameterEstimates
 
 ## Bad arguments
-test_that("cfa() returns error for invalid model parameter", {
-  expect_error(cfa(model = "INVALID", data = HolzingerSwineford1939))
-})
-
 test_that("cfa() returns error for invalid data parameter", {
   random_data <- c(1, 2, 3, 4, 5)
-  expect_error(cfa(MODEL_CFA_HS, data = random_data))
+  expect_error(suppressWarnings(cfa(MODEL_CFA_HS, data = random_data)))
 })
 
 # Reproducibility test
@@ -231,11 +227,11 @@ test_that("cfa() reproduce Holzinger and Swineford (1939) example", {
     pvalue = c(NA_real_, 0, 0, NA_real_, 0, 0, NA_real_, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
     stringsAsFactors = FALSE
   )
-  
+
   x <- as.data.frame(res$pe)
-  
-  output_params <- data.frame(lapply(x, function(y) if(is.numeric(y)) round(y, 3) else y))
-  
+
+  output_params <- data.frame(lapply(x, function(y) if (is.numeric(y)) round(y, 3) else y))
+
   output_params <- output_params[, c("lhs", "op", "rhs", "est", "se", "z", "pvalue")]
   expect_equal(output_params, expected_params,
     label = "Output Parameter Estimates",

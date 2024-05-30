@@ -70,14 +70,14 @@ testthat::test_that("sem reproduce Political Democracy example", {
   fit <- sem(model, data = PoliticalDemocracy)
   res <- summary(fit, standardized = TRUE)
   # Model Test User Model
-  expect_equal( round(res[["test"]][["standard"]][["stat"]], 3), 38.125,
-                expected.label = "Model Test User Model: Test statistic"
+  expect_equal(round(res[["test"]][["standard"]][["stat"]], 3), 38.125,
+    expected.label = "Model Test User Model: Test statistic"
   )
   expect_equal(res[["test"]][["standard"]][["df"]], 35,
-               expected.label = "Model Test User Model: Degrees of freedom"
+    expected.label = "Model Test User Model: Degrees of freedom"
   )
   expect_equal(round(res[["test"]][["standard"]][["pvalue"]], 3), 0.329,
-               expected.label = "Model Test User Model: P-value (Chi-square)"
+    expected.label = "Model Test User Model: P-value (Chi-square)"
   )
   # Parameter Estimates
   expected_params <- data.frame(
@@ -133,15 +133,15 @@ testthat::test_that("sem reproduce Political Democracy example", {
       0.347, 0.443, 0.322, 0.315, 1.000, 0.800, 0.039
     )
   )
-  
+
   x <- as.data.frame(res$pe)
-  
-  output_params <- data.frame(lapply(x, function(y) if(is.numeric(y)) round(y, 3) else y))
-  
+
+  output_params <- data.frame(lapply(x, function(y) if (is.numeric(y)) round(y, 3) else y))
+
   output_params <- output_params[, c("lhs", "op", "rhs", "est", "se", "z", "pvalue", "std.lv", "std.all")]
   expect_equal(output_params, expected_params,
-               ignore_attr = TRUE,
-               label = "Output Parameter Estimates",
-               expected.label = "Expected Parameter Estimates"
+    ignore_attr = TRUE,
+    label = "Output Parameter Estimates",
+    expected.label = "Expected Parameter Estimates"
   )
 })
