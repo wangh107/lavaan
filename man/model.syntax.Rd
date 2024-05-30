@@ -47,7 +47,7 @@ lavParseModelString(model.syntax = '', as.data.frame. = FALSE,
 \arguments{
 \item{model}{A description of the user-specified model. Typically, the model
     is described using the lavaan model syntax; see details for more 
-    information. Alternatively, a parameter table (e.g., the output of 
+    information. Alternatively, a parameter table (e.g., the output of
     \code{lavParseModelString} is also accepted.}
 \item{model.syntax}{The model syntax specifying the model. Must be a literal
 string.}
@@ -486,8 +486,7 @@ using the \code{lavTestWald()} function. However, a user-defined parameter
 additionally provides an estimate of the parameter being tested.
 
 User-defined parameters are particularly useful for specifying indirect effects
-in models of mediation.  From the \code{lavaan} tutorial at 
-\url{https://lavaan.ugent.be/tutorial/mediation.html}:
+in models of mediation. For example:
 \preformatted{
 model <- ' # direct effect
              Y ~ c*X
@@ -503,11 +502,6 @@ model <- ' # direct effect
              total := ab + c
 '
 }
-}
-
-\seealso{Detailed documentation about handling linear equality constraints,
-found among the \bold{Development notes} on the \code{lavaan} web site:
-\url{https://lavaan.ugent.be/about/development.html}
 }
 
 \references{
