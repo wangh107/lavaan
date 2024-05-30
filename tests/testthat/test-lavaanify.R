@@ -1,4 +1,4 @@
-testthat::test_that("Returns dataframe", {
+test_that("Returns dataframe", {
 
   myModel <- '
     # 1. latent variable definitions
@@ -34,29 +34,29 @@ testthat::test_that("Returns dataframe", {
 
 })
 
-testthat::test_that("Returns warning if input is parametertable", {
+test_that("Returns warning if input is parametertable", {
 
   mod <- parameterTable(FIT_CFA_HS)
 
   expect_warning(lavaanify(mod),
-                 "input already looks like a parameter table; returning as is")
+                 "input already looks like a parameter table")
 
 })
 
-testthat::test_that("Prints output when debug = TRUE", {
+test_that("Prints output when debug = TRUE", {
 
   expect_output(lavaanify(MODEL_CFA_HS, debug = TRUE))
 
 })
 
-testthat::test_that("Returns error if input bogus varTable", {
+test_that("Returns error if input bogus varTable", {
 
   expect_error(lavaanify(MODEL_CFA_HS, varTable = c(1,2,3)),
                "varTable is not a list or does not contain variable names")
 
 })
 
-testthat::test_that("check behavior when auto = TRUE", {
+test_that("check behavior when auto = TRUE", {
 
   res <- lavaanify(MODEL_CFA_HS, auto = TRUE)
   res1 <- lavaanify(MODEL_CFA_HS, auto = TRUE, model.type = "growth")
@@ -66,7 +66,7 @@ testthat::test_that("check behavior when auto = TRUE", {
 
 })
 
-testthat::test_that("Works for grouped/leveled models", {
+test_that("Works for grouped/leveled models", {
 
   model <- '
   block: 1
@@ -84,7 +84,7 @@ testthat::test_that("Works for grouped/leveled models", {
   expect_true(is.data.frame(res))
 })
 
-testthat::test_that("Ignores duplicated blocks", {
+test_that("Ignores duplicated blocks", {
 
   model <- '
   block: 1
@@ -110,7 +110,7 @@ testthat::test_that("Ignores duplicated blocks", {
 })
 
 
-testthat::test_that("effect.coding?", {
+test_that("effect.coding?", {
 
   model <- '
   block: 1
@@ -140,7 +140,7 @@ testthat::test_that("effect.coding?", {
 
 })
 
-testthat::test_that("meanstructure and marker.int.zero", {
+test_that("meanstructure and marker.int.zero", {
 
   res <- lavaanify(MODEL_CFA_HS, meanstructure = TRUE, marker.int.zero = TRUE)
 
@@ -148,7 +148,7 @@ testthat::test_that("meanstructure and marker.int.zero", {
 
 })
 
-testthat::test_that("behavior with constraints", {
+test_that("behavior with constraints", {
 
   model <- '
     f1 =~ L1*y1a + L2*y1b + L3*y1c
