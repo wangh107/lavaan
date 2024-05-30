@@ -56,8 +56,8 @@ test_that("lav_partable_merge preserves 'block' values when both tables have 'bl
 
 ## Group
 test_that("lav_partable_merge provides default values for missing 'group' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), group = c(1L, 2L))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), group = c(1L, 2L))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$group, c(1L, 1L, 1L, 2L))
@@ -68,8 +68,8 @@ test_that("lav_partable_merge provides default values for missing 'group' column
 
 ## Level
 test_that("lav_partable_merge provides default values for missing 'level' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), level = c(1L, 2L))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), level = c(1L, 2L))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$level, c(1L, 1L, 1L, 2L))
@@ -80,8 +80,8 @@ test_that("lav_partable_merge provides default values for missing 'level' column
 
 ## User
 test_that("lav_partable_merge provides default values for missing 'user' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), user = c(1L, 2L))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), user = c(1L, 2L))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$user, c(0L, 0L, 1L, 2L))
@@ -92,8 +92,8 @@ test_that("lav_partable_merge provides default values for missing 'user' column"
 
 ## Free
 test_that("lav_partable_merge provides default values for missing 'free' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), free = c(1L, 2L))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), free = c(1L, 2L))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$free, c(0L, 0L, 1L, 2L))
@@ -104,8 +104,8 @@ test_that("lav_partable_merge provides default values for missing 'free' column"
 
 ## ustart
 test_that("lav_partable_merge provides default values for missing 'ustart' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), ustart = c(1, 2))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), ustart = c(1, 2))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$ustart, c(0, 0, 1, 2))
@@ -116,8 +116,8 @@ test_that("lav_partable_merge provides default values for missing 'ustart' colum
 
 ## Exo
 test_that("lav_partable_merge provides default values for missing 'exo' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), exo = c(1L, 2L))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), exo = c(1L, 2L))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$exo, c(0L, 0L, 1L, 2L))
@@ -128,8 +128,8 @@ test_that("lav_partable_merge provides default values for missing 'exo' column",
 
 ## label
 test_that("lav_partable_merge provides default values for missing 'label' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), label = c("label1", "label2"))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), label = c("label1", "label2"))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$label, c("", "", "label1", "label2"))
@@ -140,8 +140,8 @@ test_that("lav_partable_merge provides default values for missing 'label' column
 
 ## plabel
 test_that("lav_partable_merge provides default values for missing 'plabel' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), plabel = c("plabel1", "plabel2"))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), plabel = c("plabel1", "plabel2"))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$plabel, c("", "", "plabel1", "plabel2"))
@@ -152,8 +152,8 @@ test_that("lav_partable_merge provides default values for missing 'plabel' colum
 
 ## efa
 test_that("lav_partable_merge provides default values for missing 'efa' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), efa = c("efa1", "efa2"))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), efa = c("efa1", "efa2"))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$efa, c("", "", "efa1", "efa2"))
@@ -164,8 +164,8 @@ test_that("lav_partable_merge provides default values for missing 'efa' column",
 
 ## start
 test_that("lav_partable_merge provides default values for missing 'start' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), start = c(1, 2))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), start = c(1, 2))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_true(all(is.na(result$start[1:2])))
@@ -178,8 +178,8 @@ test_that("lav_partable_merge provides default values for missing 'start' column
 
 ## est
 test_that("lav_partable_merge provides default values for missing 'est' column", {
-  pt_missing <-data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
-  pt_complete <-data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), est = c(1, 2))
+  pt_missing <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"))
+  pt_complete <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), est = c(1, 2))
   # first one missing
   result <- lav_partable_merge(pt1 = pt_missing, pt2 = pt_complete)
   expect_equal(result$est, c(0, 0, 1, 2))
@@ -269,7 +269,7 @@ test_that("lav_partable_merge issues warning when duplicates are found and warn 
   pt2 <- data.frame(lhs = c("x3", "x4"), op = c("=~", "=~"), rhs = c("y3", "y4"), block = c(1, 1))
   expect_warning(
     lav_partable_merge(pt1 = pt1, pt2 = pt2, remove.duplicated = TRUE, warn = TRUE),
-    regexp = "lavaan WARNING: duplicated parameters are ignored:"
+    regexp = "duplicated parameters are ignored"
   )
 })
 
@@ -280,7 +280,7 @@ test_that("lav_partable_merge handles fromLast argument", {
   result <- lav_partable_merge(pt1 = pt1, pt2 = pt2, remove.duplicated = TRUE, fromLast = FALSE, warn = FALSE)
   expect_equal(nrow(result), 3)
   expect_equal(result$lhs, c("x1", "x2", "x4"))
-  
+
   pt1 <- data.frame(lhs = c("x1", "x2"), op = c("=~", "=~"), rhs = c("y1", "y2"), block = c(1, 1))
   pt2 <- data.frame(lhs = c("x1", "x4"), op = c("=~", "=~"), rhs = c("y1", "y4"), block = c(1, 1))
   result <- lav_partable_merge(pt1 = pt1, pt2 = pt2, remove.duplicated = TRUE, fromLast = TRUE, warn = FALSE)

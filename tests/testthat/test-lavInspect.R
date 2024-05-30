@@ -13,7 +13,7 @@ test_that("lavInspect ONLY takes lavaan object and nothing else", { # TODO: add 
 test_that("lavInspect only takes one what argument", {
   expect_error(
     lavInspect(FIT_CFA_HS, what = c("free", "partable")),
-    "`what' arguments contains multiple arguments; only one is allowed"
+    "argument what cannot have more than one" # TODO: investigate why there's a newline added
   )
 })
 
@@ -746,7 +746,7 @@ test_that("lavInspect with what = version returns a string", {
 test_that("lavInspect raises error for not recognized argument", {
   expect_error(
     lavInspect(FIT_CFA_HS, what = "clearly not relevant"),
-    "unknown `what' argument in inspect function: `"
+    'what argument unknown:'
   )
 })
 

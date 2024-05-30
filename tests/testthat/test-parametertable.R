@@ -24,7 +24,7 @@ test_that("Different alias produce the same results", {
   result2 <- parametertable(FIT_CFA_HS)
   result3 <- parTable(FIT_CFA_HS)
   result4 <- partable(FIT_CFA_HS)
-  
+
   expect_equal(result1, result2)
   expect_equal(result1, result3)
   expect_equal(result1, result4)
