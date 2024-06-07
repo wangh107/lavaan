@@ -2,8 +2,9 @@
 test_that("varTable only takes dataframe or lavaan", {
   expect_error(varTable(123),
                "object must of class lavaan or a data.frame")
-  expect_silent(varTable(FIT_CFA_HS))
-  expect_silent(varTable(HolzingerSwineford1939, factor = "school"))
+  expect_silent(varTable(FIT_CFA_HS)) # lavaan
+  expect_silent(varTable(FIT_CFA_HS@Data)) # lavData
+  expect_silent(varTable(HolzingerSwineford1939, factor = "school")) # dataframe
 })
 
 # Output
