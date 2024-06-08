@@ -4,6 +4,20 @@ test_that("fitted type argument is case insenitive", {
   expect_equal(res1, res2, label = "lower", expected.label = "all caps")
 })
 
+test_that("fitted compute estimated values if type = ov or alias", {
+  res <- fitted(FIT_CFA_HS, type = "ov")
+  expect_s3_class(res, c("lavaan.matrix", "matrix"))
+  # alias: "casewise", "case", "obs", "observations"
+  res1 <- fitted(FIT_CFA_HS, type = "casewise")
+  res2 <- fitted(FIT_CFA_HS, type = "case")
+  res3 <- fitted(FIT_CFA_HS, type = "obs")
+  res4 <- fitted(FIT_CFA_HS, type = "observations")
+  expect_equal(res1, res, label = "casewise", expected.label = "ov")
+  expect_equal(res2, res, label = "case", expected.label = "ov")
+  expect_equal(res3, res, label = "obs", expected.label = "ov")
+  expect_equal(res4, res, label = "observations", expected.label = "ov")
+})
+
 test_that("fitted return a list of matrix that contains cov", {
   res <- fitted(FIT_CFA_HS)
   expect_type(res, "list")
