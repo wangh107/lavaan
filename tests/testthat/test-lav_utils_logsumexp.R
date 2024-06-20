@@ -7,7 +7,7 @@ test_that("lav_utils_logsumexp returns same value as log(sum(exp(x))) for normal
                expected.label = "log(sum(exp(x)))")
 })
 
-test_that("lav_utils_logsumexp throws error for empty vector", {
+test_that("lav_utils_logsumexp throws warning for empty vector", {
   x <- numeric(0)
-  expect_error(lav_utils_logsumexp(x))
+  expect_warning(lav_utils_logsumexp(x))
 })
