@@ -1,5 +1,3 @@
-library(testthat)
-
 test_that("pprint.matrix.symm prints lower half of symmetric matrix correctly", {
   matrix_data <- matrix(1:9, ncol = 3, nrow = 3)
   rownames(matrix_data) <- colnames(matrix_data) <- c("Var1", "Var2", "Var3")
